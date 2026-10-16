@@ -9,5 +9,8 @@
     "not_found_handling": "none",
     "html_handling": "auto-trailing-slash",
   },
-  "services": [{ "binding": "SITE_STDX", "service": "baskingspot-dev-stdx" }],
+  "services": [
+    { "binding": "SITE_STDX", "service": "baskingspot-dev-stdx" },
+    { "binding": "SITE_COMPRESS", "service": "baskingspot-dev-compress" },
+  ],
 }
