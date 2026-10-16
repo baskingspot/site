@@ -1,0 +1,8 @@
+# Copy this file to .envrc.local, which git ignores, and fill in your values.
+# Only a person applies the Terraform in terraform/. CI never does.
+
+# A Cloudflare token that can create account tokens and Workers, and read the baskingspot.dev zone.
+export CLOUDFLARE_API_TOKEN=
+
+# A GitHub token that can write Actions secrets and variables in the baskingspot repos.
+export GITHUB_TOKEN=$(gh auth token)

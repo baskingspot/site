@@ -1,0 +1,6 @@
+.direnv/
+.envrc.local
+
+# OpenTofu state holds the minted tokens. Never commit it.
+**/.terraform/
+**/terraform.tfstate*
