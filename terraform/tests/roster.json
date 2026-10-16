@@ -1,6 +1,6 @@
 {
   "sites": {
-    "stdx": { "repo": "stdx", "live": true },
+    "stdx": { "repo": "stdx" },
     "zig-benchmark": { "repo": "benchmark" }
   }
 }

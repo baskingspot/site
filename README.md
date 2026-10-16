@@ -13,19 +13,19 @@ The router for baskingspot.dev, and the Terraform that gives each library its ow
 
 | Path               | Content                                                                                                            |
 | ------------------ | ------------------------------------------------------------------------------------------------------------------ |
-| `sites.json`       | The roster: each slug, the repo that deploys it, and whether the router serves it yet (`live`)                     |
+| `sites.json`       | The roster: each slug and the repo that deploys it                                                                 |
 | `router/`          | The router Worker, its `wrangler.jsonc`, and the landing page in `public/`                                         |
 | `terraform/`       | For each site and the router: an empty Worker, a token scoped to it, and the token written into the repo's secrets |
 | `terraform/tests/` | Tests with mocked providers. They check the wiring: one token per Worker, scoped to its id                         |
 
-The router's `wrangler.jsonc` lists one service binding per live site, named `SITE_<SLUG>`. A test fails if that list and `sites.json` disagree.
+The router's `wrangler.jsonc` lists one service binding per site it serves, named `SITE_<SLUG>`.
 
 ## Add a site
 
 1. Add the slug and its repo to `sites.json`: `"stdx": { "repo": "stdx" }`.
 2. Run `just plan`, read it, and run `just apply`. It creates the Worker `baskingspot-dev-<slug>`, a token that can deploy only that Worker, and sets `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` in the repo.
 3. In the library repo, deploy the Worker with `wrangler deploy`, using the secret from step 2.
-4. In this repo, set `"live": true` in `sites.json`, add the matching binding to `router/wrangler.jsonc`, and push. CI deploys the router.
+4. In this repo, add the matching binding to `router/wrangler.jsonc` and push. CI deploys the router.
 
 The router can't bind a Worker that has no deployed version, which is why step 4 comes after step 3.
 
