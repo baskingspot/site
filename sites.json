@@ -1,3 +1,7 @@
 {
-  "sites": {}
+  "sites": {
+    "stdx": {
+      "repo": "stdx"
+    }
+  }
 }
