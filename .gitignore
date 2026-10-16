@@ -4,3 +4,6 @@
 # OpenTofu state holds the minted tokens. Never commit it.
 **/.terraform/
 **/terraform.tfstate*
+
+# Built by `just build` from router/static and router/index.html.
+router/public/

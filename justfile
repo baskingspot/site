@@ -35,7 +35,12 @@ fmt:
 
 [doc("Everything CI runs")]
 [group("ci")]
-ci: test lint
+ci: test lint build
+
+[doc("Build router/public: the static files, and the landing page with one entry per site in sites.json")]
+[group("deploy")]
+build:
+    node router/build.mjs
 
 [doc("Show what applying the Terraform would change. Needs CLOUDFLARE_API_TOKEN and GITHUB_TOKEN, see .envrc.local.example")]
 [group("terraform")]
@@ -51,10 +56,10 @@ apply:
 
 [doc("Deploy the router. CI runs this on main with the token Terraform minted. Needs CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID")]
 [group("deploy")]
-deploy:
+deploy: build
     wrangler deploy --config router/wrangler.jsonc
 
 [doc("Run the router and the landing page locally on port 8787")]
 [group("deploy")]
-dev:
+dev: build
     wrangler dev --config router/wrangler.jsonc

@@ -11,18 +11,18 @@ The router for baskingspot.dev, and the Terraform that gives each library its ow
 
 ## Layout
 
-| Path               | Content                                                                                                            |
-| ------------------ | ------------------------------------------------------------------------------------------------------------------ |
-| `sites.json`       | The roster: each slug and the repo that deploys it                                                                 |
-| `router/`          | The router Worker, its `wrangler.jsonc`, and the landing page in `public/`                                         |
-| `terraform/`       | For each site and the router: an empty Worker, a token scoped to it, and the token written into the repo's secrets |
-| `terraform/tests/` | Tests with mocked providers. They check the wiring: one token per Worker, scoped to its id                         |
+| Path               | Content                                                                                                                                              |
+| ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `sites.json`       | The roster: each slug, the repo that deploys it, and a one-sentence description for the landing page                                                 |
+| `router/`          | The router Worker and its `wrangler.jsonc`. `index.html` and `static/` are the landing page. `build.mjs` writes `public/` from them and `sites.json` |
+| `terraform/`       | For each site and the router: an empty Worker, a token scoped to it, and the token written into the repo's secrets                                   |
+| `terraform/tests/` | Tests with mocked providers. They check the wiring: one token per Worker, scoped to its id                                                           |
 
 The router's `wrangler.jsonc` lists one service binding per site it serves, named `SITE_<SLUG>`.
 
 ## Add a site
 
-1. Add the slug and its repo to `sites.json`: `"stdx": { "repo": "stdx" }`.
+1. Add the slug, its repo, and a one-sentence description to `sites.json`: `"stdx": { "repo": "stdx", "description": "..." }`. The description is the entry on the landing page.
 2. Run `just plan`, read it, and run `just apply`. It creates the Worker `baskingspot-dev-<slug>`, a token that can deploy only that Worker, and sets `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` in the repo.
 3. In the library repo, deploy the Worker with `wrangler deploy`, using the secret from step 2.
 4. In this repo, add the matching binding to `router/wrangler.jsonc` and push. CI deploys the router.

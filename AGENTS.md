@@ -18,6 +18,7 @@ The flake is the tool contract, from `baskingspot/nix`. `nix develop` provides O
 - The router doesn't strip the path prefix. Each site builds into `<slug>/`. If the router stripped it, a site's own redirects would send the browser out of the prefix.
 - A site's Worker is named `baskingspot-dev-<slug>` and its binding is `SITE_<SLUG>`. Change one only with the other.
 - The router's custom domain is in Terraform, not in `wrangler.jsonc`. An account token can't carry zone permissions, so a wrangler deploy can't reconcile a domain.
+- `router/public/` is generated and ignored. Edit `router/index.html` and `router/static/`. `just build` writes it, and `just deploy` and `just dev` run it first.
 - Add a site's binding to `router/wrangler.jsonc` only after its repo has deployed its Worker once. Binding a Worker with no deployed version fails.
 - Don't hand-copy a Worker's script tag. A token's scope takes `cloudflare_worker.this[...].id`.
 - Format OpenTofu with `tofu fmt`. Recipes carry `[doc]` and `[group]`. Commit messages are one line, `area: summary`, and every commit is signed.
