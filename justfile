@@ -52,9 +52,9 @@ apply:
 [doc("Deploy the router. CI runs this on main with the token Terraform minted. Needs CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID")]
 [group("deploy")]
 deploy:
-    wrangler deploy --config router/wrangler.json
+    wrangler deploy --config router/wrangler.jsonc
 
 [doc("Run the router and the landing page locally on port 8787")]
 [group("deploy")]
 dev:
-    wrangler dev --config router/wrangler.json
+    wrangler dev --config router/wrangler.jsonc

@@ -3,7 +3,7 @@
 # the token written into the site's repo as the CLOUDFLARE_API_TOKEN secret.
 # The code is deployed by that repo's CI with wrangler. Nothing here deploys code.
 #
-# The router's custom domain lives here, not in wrangler.json. An account
+# The router's custom domain lives here, not in wrangler.jsonc. An account
 # token cannot carry zone permissions, so a deploy could not reconcile it.
 
 locals {

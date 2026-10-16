@@ -4,7 +4,17 @@ import { test } from "node:test";
 
 import router, { bindingName, siteFor } from "../src/index.mjs";
 
-const read = (path) => JSON.parse(readFileSync(new URL(path, import.meta.url), "utf8"));
+const text = (path) => readFileSync(new URL(path, import.meta.url), "utf8");
+const read = (path) => JSON.parse(text(path));
+
+// wrangler.jsonc allows comments and trailing commas. This handles those two
+// and nothing else, which is all the file uses.
+const readJsonc = (path) =>
+  JSON.parse(
+    text(path)
+      .replace(/^\s*\/\/.*$/gm, "")
+      .replace(/,(\s*[}\]])/g, "$1"),
+  );
 
 test("a slug maps to its binding name", () => {
   assert.equal(bindingName("stdx"), "SITE_STDX");
@@ -36,17 +46,17 @@ test("the router forwards the request unchanged and 404s the rest", async () => 
   assert.equal(miss.status, 404);
 });
 
-test("wrangler.json binds exactly the live sites in sites.json", () => {
+test("wrangler.jsonc binds exactly the live sites in sites.json", () => {
   const { sites } = read("../../sites.json");
   const live = Object.entries(sites)
     .filter(([, site]) => site.live === true)
     .map(([slug]) => slug)
     .sort();
-  const bound = read("../wrangler.json")
+  const bound = readJsonc("../wrangler.jsonc")
     .services.map((service) => service.binding)
     .sort();
   assert.deepEqual(bound, live.map(bindingName).sort());
-  for (const service of read("../wrangler.json").services) {
+  for (const service of readJsonc("../wrangler.jsonc").services) {
     assert.match(service.service, /^baskingspot-dev-[a-z0-9-]+$/);
   }
 });
