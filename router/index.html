@@ -39,7 +39,7 @@
       }
       body {
         margin: 0 auto;
-        max-width: 40rem;
+        max-width: 56rem;
         padding: 4rem 1.5rem;
         background: var(--bg);
         color: var(--fg);
@@ -73,6 +73,14 @@
       .what {
         margin-top: 0.5rem;
         color: var(--muted);
+      }
+      .columns {
+        display: grid;
+        /* Two columns when there is room, one on a phone. A lone section keeps
+           the width of one column instead of stretching across the page. */
+        grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
+        gap: 0 3rem;
+        margin-top: 0.5rem;
       }
       h2 {
         margin: 3rem 0 0;
@@ -115,10 +123,9 @@
     </picture>
     <p class="tagline">Zig is cold-blooded. Come bask.</p>
     <p class="what">Libraries between std and your application.</p>
-    <h2>Libraries</h2>
-    <ul>
+    <div class="columns">
       <!-- sites -->
-    </ul>
+    </div>
     <footer><a href="https://github.com/baskingspot">github.com/baskingspot</a></footer>
   </body>
 </html>

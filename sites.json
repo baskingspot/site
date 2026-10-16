@@ -2,11 +2,13 @@
   "sites": {
     "stdx": {
       "repo": "stdx",
-      "description": "Extensions to the Zig 0.16 standard library: fixed-capacity containers, strict parsers, IPv4 types, and the primitives std lacks."
+      "description": "Extensions to the Zig 0.16 standard library: fixed-capacity containers, strict parsers, IPv4 types, and the primitives std lacks.",
+      "kind": "library"
     },
     "compress": {
       "repo": "compress",
-      "description": "Compression codecs in pure Zig: Snappy, DEFLATE, gzip, zlib, and Zstandard, plus a Brotli decoder."
+      "description": "Compression codecs in pure Zig: Snappy, DEFLATE, gzip, zlib, and Zstandard, plus a Brotli decoder.",
+      "kind": "library"
     }
   }
 }

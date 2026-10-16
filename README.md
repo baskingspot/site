@@ -22,7 +22,7 @@ The router's `wrangler.jsonc` lists one service binding per site it serves, name
 
 ## Add a site
 
-1. Add the slug, its repo, and a one-sentence description to `sites.json`: `"stdx": { "repo": "stdx", "description": "..." }`. The description is the entry on the landing page.
+1. Add the slug, its repo, its `kind`, and a one-sentence description to `sites.json`: `"stdx": { "repo": "stdx", "kind": "library", "description": "..." }`. `kind` is `library` or `tool`, and picks the landing page column. The description is the entry on the page, and an unknown `kind` fails the build.
 2. Run `just plan`, read it, and run `just apply`. It creates the Worker `baskingspot-dev-<slug>`, a token that can deploy only that Worker, and sets `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` in the repo.
 3. In the library repo, deploy the Worker with `wrangler deploy`, using the secret from step 2.
 4. In this repo, add the matching binding to `router/wrangler.jsonc` and push. CI deploys the router.
