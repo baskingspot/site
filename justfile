@@ -19,7 +19,7 @@ lint:
     tofu fmt -check -recursive terraform
     tflint --chdir terraform
     oxlint router
-    oxfmt --check README.md AGENTS.md docs router sites.json
+    oxfmt --check README.md AGENTS.md docs router sites.json .github
     nix fmt -- --ci
     actionlint
     zizmor .
@@ -29,7 +29,7 @@ lint:
 [group("lint")]
 fmt:
     tofu fmt -recursive terraform
-    oxfmt README.md AGENTS.md docs router sites.json
+    oxfmt README.md AGENTS.md docs router sites.json .github
     nix fmt
     just --fmt
 
