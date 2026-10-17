@@ -20,6 +20,8 @@ The router for baskingspot.dev, and the Terraform that gives each library its ow
 
 The router's `wrangler.jsonc` lists one service binding per site it serves, named `SITE_<SLUG>`.
 
+The router also adds security headers to every site's responses, and replaces any 404 with the branded page. The front page gets its headers from `router/static/_headers`. `just build` writes `sitemap.xml` from the roster and `security.txt`, whose `Expires` is a year past the build. The zone's own settings (HTTPS only, HSTS, TLS 1.2, mail records) are Terraform in `~/code/cloudflare`, not here.
+
 ## Add a site
 
 1. Add the slug, its repo, its `kind`, and a one-sentence description to `sites.json`: `"stdx": { "repo": "stdx", "kind": "library", "description": "..." }`. `kind` is `library` or `tool`, and picks the landing page column. The description is the entry on the page, and an unknown `kind` fails the build.

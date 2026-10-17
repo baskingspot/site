@@ -20,6 +20,8 @@ The flake is the tool contract, from `baskingspot/nix`. `nix develop` provides O
 - The router's custom domain is in Terraform, not in `wrangler.jsonc`. An account token can't carry zone permissions, so a wrangler deploy can't reconcile a domain.
 - `router/public/` is generated and ignored. Edit `router/index.html` and `router/static/`. `just build` writes it, and `just deploy` and `just dev` run it first.
 - Every `sites.json` entry has a `kind`, `library` or `tool`. The landing page shows a column for each kind that has sites, and `renderSites` throws on any other value. Add a kind in `COLUMNS` in `router/build.mjs` and test it.
+- A site behind the router has no CSP from the router, because stdx's API viewer needs wasm and inline highlighting. Only the front page has one, in `router/static/_headers`. Don't add a strict CSP to the router without testing every site's viewer.
+- The 404 page is a string in `router/src/notfound.mjs`, not an asset, so `/404` is not a page that answers 200.
 - Add a site's binding to `router/wrangler.jsonc` only after its repo has deployed its Worker once. Binding a Worker with no deployed version fails.
 - Don't hand-copy a Worker's script tag. A token's scope takes `cloudflare_worker.this[...].id`.
 - Format OpenTofu with `tofu fmt`. Recipes carry `[doc]` and `[group]`. Commit messages are one line, `area: summary`, and every commit is signed.

@@ -1,5 +1,6 @@
 // Builds router/public/, the assets the router serves: the files in static/,
-// and index.html with one entry per site in sites.json. Run by `just build`.
+// index.html with one entry per site in sites.json, a sitemap of the same
+// sites, and security.txt. Run by `just build`.
 import { cpSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 
@@ -51,6 +52,32 @@ export function renderSites(sites) {
     .join("\n");
 }
 
+const ORIGIN = "https://baskingspot.dev";
+
+/** sitemap.xml: the front page and one entry per site. A site lists its own pages. */
+export function renderSitemap(sites) {
+  const urls = ["/", ...Object.keys(sites).map((slug) => `/${slug}/`)];
+  const entries = urls.map((path) => `  <url><loc>${ORIGIN}${path}</loc></url>`).join("\n");
+  return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${entries}\n</urlset>\n`;
+}
+
+/**
+ * security.txt, RFC 9116. Reports go to GitHub's private vulnerability form on
+ * the org's profile repo. `Expires` is a year after the build, and the router
+ * is rebuilt and redeployed whenever norm touches a repo, so it does not lapse
+ * while the project is alive.
+ */
+export function renderSecurityTxt(now) {
+  const expires = new Date(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+  return [
+    "Contact: https://github.com/baskingspot/.github/security/advisories/new",
+    `Expires: ${expires.toISOString().replace(/\.\d{3}Z$/, "Z")}`,
+    "Preferred-Languages: en",
+    `Canonical: ${ORIGIN}/.well-known/security.txt`,
+    "",
+  ].join("\n");
+}
+
 if (import.meta.main) {
   const { sites } = JSON.parse(readFileSync(here("../sites.json"), "utf8"));
   const template = readFileSync(here("index.html"), "utf8");
@@ -60,4 +87,7 @@ if (import.meta.main) {
   mkdirSync(here("public"));
   cpSync(here("static"), here("public"), { recursive: true });
   writeFileSync(here("public/index.html"), template.replace("<!-- sites -->", renderSites(sites)));
+  writeFileSync(here("public/sitemap.xml"), renderSitemap(sites));
+  mkdirSync(here("public/.well-known"));
+  writeFileSync(here("public/.well-known/security.txt"), renderSecurityTxt(new Date()));
 }
