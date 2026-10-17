@@ -29,7 +29,6 @@
 
             packages = [
               pkgs.nodejs_24
-              pkgs.oxfmt
               pkgs.oxlint
             ];
           };
