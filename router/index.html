@@ -118,11 +118,13 @@
         font-size: 1rem;
       }
       .agents {
+        /* The button sits on the panel's edge, so both use this one color. */
+        --panel: color-mix(in srgb, var(--fg) 3%, var(--bg));
         margin-top: 3rem;
         padding: 1.25rem 1.25rem 1.5rem;
         border: 1px solid var(--rule);
         border-radius: 0.5rem;
-        background: color-mix(in srgb, var(--fg) 3%, transparent);
+        background: var(--panel);
         font-size: 1rem;
       }
       .agents h2 {
@@ -164,7 +166,7 @@
         padding: 0.2rem 0.6rem;
         border: 1px solid var(--rule);
         border-radius: 0.25rem;
-        background: var(--bg);
+        background: var(--panel);
         color: var(--fg);
         font: inherit;
         font-size: 0.8rem;
