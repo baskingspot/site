@@ -24,17 +24,17 @@ The router also adds security headers to every site's responses, and replaces an
 
 ## Markdown for agents
 
-Every page has a markdown twin at the same path, with `index.md` in place of the
+Every page has a markdown copy at the same path, with `index.md` in place of the
 trailing slash. `/stdx/` is `/stdx/index.md`. A library's docs build writes the
-twin from the markdown the site is generated from, so the twin is the source,
-not a conversion of the HTML.
+copy from the markdown the site is generated from, so it is the source, not a
+conversion of the HTML.
 
 The router does three things with that:
 
-- A request with `Accept: text/markdown` gets the twin, sent as
-  `text/markdown`. When the twin is missing, the router serves the HTML page
+- A request with `Accept: text/markdown` gets the copy, sent as
+  `text/markdown`. When the copy is missing, the router serves the HTML page
   instead of a 404.
-- Every response advertises the twin with
+- Every response advertises the copy with
   `Link: </stdx/index.md>; rel="alternate"; type="text/markdown"`, and the
   index at `/llms.txt` with `rel="describedby"`. It also sets
   `Vary: Accept`, so a cache keeps the two apart, and marks the markdown
@@ -44,7 +44,7 @@ The router does three things with that:
   negotiates too.
 
 `just build` writes `/llms.txt` from `sites.json` in the llmstxt.org v2 format,
-and the front page's own twin at `/index.md`.
+and the front page's own copy at `/index.md`.
 
 ## Add a site
 

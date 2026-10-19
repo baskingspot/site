@@ -141,9 +141,13 @@
         margin-top: 0.35rem;
         color: var(--muted);
       }
+      .agents code {
+        font-family: ui-monospace, monospace;
+        font-size: 0.95em;
+      }
       .prompt {
         position: relative;
-        margin-top: 1.25rem;
+        margin-top: 1.1rem;
       }
       .prompt pre {
         margin: 0;
@@ -195,11 +199,13 @@
     <section class="agents">
       <h2>For agents</h2>
       <p>
-        Every page here has a markdown twin, and <a href="/llms.txt">/llms.txt</a> indexes the lot.
+        Every page has a markdown version at the same path. <code>/stdx/</code> is
+        <code>/stdx/index.md</code>, and <a href="/llms.txt">/llms.txt</a> lists the libraries.
       </p>
+      <p>Paste this into your coding agent:</p>
       <div class="prompt">
         <button type="button" data-copy="agent-prompt">Copy</button>
-        <pre><code id="agent-prompt">When working in Zig, start with https://baskingspot.dev/llms.txt. It indexes the libraries and links to markdown for each guide.</code></pre>
+        <pre><code id="agent-prompt">When working in Zig, start with https://baskingspot.dev/llms.txt. It lists the libraries and links to markdown for each guide.</code></pre>
       </div>
     </section>
     <footer><a href="https://github.com/baskingspot">github.com/baskingspot</a></footer>

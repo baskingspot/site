@@ -76,10 +76,10 @@ export function renderLlmsTxt(sites) {
     "> Zig is cold-blooded. Come bask. Extensions to Zig's standard library, and the tools around it.",
     "",
     "Every guide here is written as markdown and built into HTML, so the markdown",
-    "is the source rather than a conversion of the page. Each page has a twin at",
-    "the same path with `index.md` in place of the trailing slash: `/stdx/` is",
-    "`/stdx/index.md`. Ask for any page with `Accept: text/markdown` and this site",
-    "sends the twin instead of the HTML.",
+    "is the source rather than a conversion of the page. Each page has a markdown",
+    "copy at the same path with `index.md` in place of the trailing slash:",
+    "`/stdx/` is `/stdx/index.md`. Ask for any page with `Accept: text/markdown`",
+    "and this site sends the copy instead of the HTML.",
     "",
     ...sections,
     "## Optional",
@@ -113,7 +113,7 @@ export function renderIndexMarkdown(sites) {
     "## For agents",
     "",
     `- [llms.txt](${ORIGIN}/llms.txt): this roster, in the llmstxt.org format.`,
-    "- Every page has a markdown twin. `/stdx/` is `/stdx/index.md`.",
+    "- Every page has a markdown copy. `/stdx/` is `/stdx/index.md`.",
     "",
   ].join("\n");
 }
