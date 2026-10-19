@@ -14,6 +14,11 @@
       "repo": "testingx",
       "description": "A plain-text test runner and Go-style benchmarks for Zig 0.16.",
       "kind": "library"
+    },
+    "tls": {
+      "repo": "tls",
+      "description": "Sans-I/O TLS 1.3 in Zig: no sockets, no engine allocations, caller-owned buffers.",
+      "kind": "library"
     }
   }
 }

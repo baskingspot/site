@@ -21,5 +21,6 @@
     { "binding": "SITE_STDX", "service": "baskingspot-dev-stdx" },
     { "binding": "SITE_COMPRESS", "service": "baskingspot-dev-compress" },
     { "binding": "SITE_TESTINGX", "service": "baskingspot-dev-testingx" },
+    { "binding": "SITE_TLS", "service": "baskingspot-dev-tls" },
   ],
 }
