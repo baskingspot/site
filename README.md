@@ -22,6 +22,30 @@ The router's `wrangler.jsonc` lists one service binding per site it serves, name
 
 The router also adds security headers to every site's responses, and replaces any 404 with the branded page. The front page gets its headers from `router/static/_headers`. `just build` writes `sitemap.xml` from the roster and `security.txt`, whose `Expires` is a year past the build. The zone's own settings (HTTPS only, HSTS, TLS 1.2, mail records) are Terraform in `~/code/cloudflare`, not here.
 
+## Markdown for agents
+
+Every page has a markdown twin at the same path, with `index.md` in place of the
+trailing slash. `/stdx/` is `/stdx/index.md`. A library's docs build writes the
+twin from the markdown the site is generated from, so the twin is the source,
+not a conversion of the HTML.
+
+The router does three things with that:
+
+- A request with `Accept: text/markdown` gets the twin, sent as
+  `text/markdown`. When the twin is missing, the router serves the HTML page
+  instead of a 404.
+- Every response advertises the twin with
+  `Link: </stdx/index.md>; rel="alternate"; type="text/markdown"`, and the
+  index at `/llms.txt` with `rel="describedby"`. It also sets
+  `Vary: Accept`, so a cache keeps the two apart, and marks the markdown
+  `noindex` so it does not compete with the page.
+- The front page is an asset, and assets answer before the Worker runs.
+  `run_worker_first` in `wrangler.jsonc` names `/`, so the front page
+  negotiates too.
+
+`just build` writes `/llms.txt` from `sites.json` in the llmstxt.org v2 format,
+and the front page's own twin at `/index.md`.
+
 ## Add a site
 
 1. Add the slug, its repo, its `kind`, and a one-sentence description to `sites.json`: `"stdx": { "repo": "stdx", "kind": "library", "description": "..." }`. `kind` is `library` or `tool`, and picks the landing page column. The description is the entry on the page, and an unknown `kind` fails the build.

@@ -6,3 +6,9 @@
   Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=()
   X-Frame-Options: DENY
   Content-Security-Policy: default-src 'none'; style-src 'unsafe-inline'; img-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'
+
+# The markdown twin of the front page. The Worker sets this too when it serves
+# the twin for an Accept: text/markdown request, but an agent may fetch the
+# path directly, and then the asset layer answers.
+/index.md
+  Content-Type: text/markdown; charset=utf-8

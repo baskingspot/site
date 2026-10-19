@@ -1,7 +1,13 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 
-import { renderSecurityTxt, renderSitemap, renderSites } from "../build.mjs";
+import {
+  renderIndexMarkdown,
+  renderLlmsTxt,
+  renderSecurityTxt,
+  renderSitemap,
+  renderSites,
+} from "../build.mjs";
 
 const lib = (description) => ({ kind: "library", description });
 const tool = (description) => ({ kind: "tool", description });
@@ -59,4 +65,33 @@ test("security.txt has a contact, an expiry a year out, and a canonical URL", ()
   assert.match(text, /^Expires: 2027-10-17T12:34:56Z$/m);
   assert.match(text, /^Canonical: https:\/\/baskingspot\.dev\/\.well-known\/security\.txt$/m);
   assert.ok(text.endsWith("\n"));
+});
+
+test("llms.txt has the h1, the summary blockquote, and one list per kind", () => {
+  const text = renderLlmsTxt({ stdx: lib("stdx desc."), zigdoc: tool("docs.") });
+  assert.match(text, /^# baskingspot\n/);
+  assert.match(text, /^> Zig is cold-blooded\. Come bask\./m);
+  assert.match(text, /^## Libraries$/m);
+  assert.match(text, /^## Tools$/m);
+  assert.match(text, /^- \[stdx\]\(https:\/\/baskingspot\.dev\/stdx\/\): stdx desc\.$/m);
+  assert.match(text, /^## Optional$/m);
+  assert.ok(text.indexOf("## Libraries") < text.indexOf("## Tools"));
+});
+
+test("llms.txt teaches the markdown twin rule in its prose", () => {
+  const text = renderLlmsTxt({ stdx: lib("std.") });
+  assert.match(text, /\/stdx\/` is/);
+  assert.match(text, /Accept: text\/markdown/);
+});
+
+test("llms.txt has no section for an empty kind", () => {
+  const text = renderLlmsTxt({ stdx: lib("std.") });
+  assert.doesNotMatch(text, /## Tools/);
+});
+
+test("the front page has a markdown twin with the same roster", () => {
+  const text = renderIndexMarkdown({ stdx: lib("std.") });
+  assert.match(text, /^# baskingspot\n/);
+  assert.match(text, /\[stdx\]\(https:\/\/baskingspot\.dev\/stdx\/\)/);
+  assert.match(text, /llms\.txt/);
 });

@@ -9,6 +9,8 @@
       content="Zig is cold-blooded. Come bask. Libraries between std and your application."
     />
     <link rel="canonical" href="https://baskingspot.dev/" />
+    <link rel="alternate" type="text/markdown" href="/index.md" />
+    <link rel="describedby" href="/llms.txt" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="author" href="/humans.txt" />
     <meta name="theme-color" content="#f4f1ec" media="(prefers-color-scheme: light)" />
@@ -115,6 +117,27 @@
         margin-top: 2.5rem;
         font-size: 1rem;
       }
+      .agents {
+        margin-top: 2.5rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid var(--rule);
+        font-size: 1rem;
+      }
+      .agents h2 {
+        margin-top: 0;
+      }
+      .agents pre {
+        margin: 0.75rem 0 0;
+        padding: 1rem;
+        border: 1px solid var(--rule);
+        border-radius: 0.375rem;
+        overflow-x: auto;
+        font-size: 0.9rem;
+        line-height: 1.5;
+      }
+      .agents code {
+        font-family: ui-monospace, monospace;
+      }
     </style>
   </head>
   <body>
@@ -127,6 +150,14 @@
     <div class="columns">
       <!-- sites -->
     </div>
+    <section class="agents">
+      <h2>For agents</h2>
+      <p>
+        Every page here has a markdown twin, and <a href="/llms.txt">/llms.txt</a> indexes the lot.
+        Paste this into your coding agent:
+      </p>
+      <pre><code>When working in Zig, read https://baskingspot.dev/llms.txt first. It indexes the baskingspot libraries and links to a markdown version of each guide.</code></pre>
+    </section>
     <footer><a href="https://github.com/baskingspot">github.com/baskingspot</a></footer>
   </body>
 </html>

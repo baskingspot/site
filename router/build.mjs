@@ -54,6 +54,70 @@ export function renderSites(sites) {
 
 const ORIGIN = "https://baskingspot.dev";
 
+/**
+ * llms.txt, llmstxt.org v2: an H1, a blockquote summary, prose, then one H2
+ * list per kind. The prose is the contract: every directory has an `index.md`
+ * twin, and the router serves it when the request asks for markdown. The twin
+ * is the source the site is built from, not an HTML-to-markdown conversion.
+ */
+export function renderLlmsTxt(sites) {
+  const sections = COLUMNS.map(({ kind, title }) => {
+    const entries = Object.entries(sites).filter(([, site]) => site.kind === kind);
+    if (entries.length === 0) return "";
+    const items = entries
+      .map(([slug, site]) => `- [${slug}](${ORIGIN}/${slug}/): ${site.description}`)
+      .join("\n");
+    return `## ${title}\n\n${items}\n`;
+  }).filter((section) => section !== "");
+
+  return [
+    "# baskingspot",
+    "",
+    "> Zig is cold-blooded. Come bask. Extensions to Zig's standard library, and the tools around it.",
+    "",
+    "Every guide here is written as markdown and built into HTML, so the markdown",
+    "is the source rather than a conversion of the page. Each page has a twin at",
+    "the same path with `index.md` in place of the trailing slash: `/stdx/` is",
+    "`/stdx/index.md`. Ask for any page with `Accept: text/markdown` and this site",
+    "sends the twin instead of the HTML.",
+    "",
+    ...sections,
+    "## Optional",
+    "",
+    "- [baskingspot on GitHub](https://github.com/baskingspot): the source for every project listed above.",
+    "",
+  ].join("\n");
+}
+
+/**
+ * The landing page as markdown: the same roster, minus the styling. This is
+ * the `/index.md` twin, so an agent that lands on the front page has the same
+ * one-fetch path the library pages have.
+ */
+export function renderIndexMarkdown(sites) {
+  const sections = COLUMNS.map(({ kind, title }) => {
+    const entries = Object.entries(sites).filter(([, site]) => site.kind === kind);
+    if (entries.length === 0) return "";
+    const items = entries
+      .map(([slug, site]) => `- [${slug}](${ORIGIN}/${slug}/): ${site.description}`)
+      .join("\n");
+    return `## ${title}\n\n${items}\n`;
+  }).filter((section) => section !== "");
+
+  return [
+    "# baskingspot",
+    "",
+    "> Zig is cold-blooded. Come bask. Libraries between std and your application.",
+    "",
+    ...sections,
+    "## For agents",
+    "",
+    `- [llms.txt](${ORIGIN}/llms.txt): this roster, in the llmstxt.org format.`,
+    "- Every page has a markdown twin. `/stdx/` is `/stdx/index.md`.",
+    "",
+  ].join("\n");
+}
+
 /** sitemap.xml: the front page and one entry per site. A site lists its own pages. */
 export function renderSitemap(sites) {
   const urls = ["/", ...Object.keys(sites).map((slug) => `/${slug}/`)];
@@ -87,6 +151,8 @@ if (import.meta.main) {
   mkdirSync(here("public"));
   cpSync(here("static"), here("public"), { recursive: true });
   writeFileSync(here("public/index.html"), template.replace("<!-- sites -->", renderSites(sites)));
+  writeFileSync(here("public/index.md"), renderIndexMarkdown(sites));
+  writeFileSync(here("public/llms.txt"), renderLlmsTxt(sites));
   writeFileSync(here("public/sitemap.xml"), renderSitemap(sites));
   mkdirSync(here("public/.well-known"));
   writeFileSync(here("public/.well-known/security.txt"), renderSecurityTxt(new Date()));

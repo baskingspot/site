@@ -7,3 +7,6 @@
 
 # Built by `just build` from router/static and router/index.html.
 router/public/
+
+# Wrangler's local state from `just dev` and from a dry run.
+.wrangler/

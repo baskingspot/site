@@ -91,3 +91,97 @@ test("a redirect from a site passes through with its status and location", async
   assert.equal(res.status, 307);
   assert.equal(res.headers.get("location"), "/stdx/api/");
 });
+
+test("an agent that asks for markdown gets the twin, said to be markdown", async () => {
+  const seen = [];
+  const env = {
+    SITE_STDX: {
+      fetch: async (request) => {
+        seen.push(new URL(request.url).pathname);
+        if (new URL(request.url).pathname === "/stdx/index.md") {
+          return new Response("# stdx\n", { headers: { "content-length": "8" } });
+        }
+        return new Response("<h1>stdx</h1>", { headers: { "content-type": "text/html" } });
+      },
+    },
+  };
+  const res = await router.fetch(
+    new Request("https://baskingspot.dev/stdx/", { headers: { accept: "text/markdown" } }),
+    env,
+  );
+  assert.deepEqual(seen, ["/stdx/index.md"]);
+  assert.equal(res.status, 200);
+  assert.match(res.headers.get("content-type"), /^text\/markdown/);
+  assert.equal(res.headers.get("vary"), "accept");
+  assert.match(res.headers.get("x-robots-tag"), /noindex/);
+  assert.match(res.headers.get("link"), /rel="alternate"; type="text\/markdown"/);
+  assert.equal(res.headers.get("x-markdown-tokens"), "2");
+  assert.equal(await res.text(), "# stdx\n");
+});
+
+test("a browser gets the page, and it advertises the twin", async () => {
+  const seen = [];
+  const env = {
+    SITE_STDX: {
+      fetch: async (request) => {
+        seen.push(new URL(request.url).pathname);
+        return new Response("<h1>stdx</h1>", { headers: { "content-type": "text/html" } });
+      },
+    },
+  };
+  const res = await router.fetch(
+    new Request("https://baskingspot.dev/stdx/", { headers: { accept: "text/html" } }),
+    env,
+  );
+  assert.deepEqual(seen, ["/stdx/"]);
+  assert.match(res.headers.get("content-type"), /^text\/html/);
+  assert.equal(res.headers.get("vary"), "accept");
+  assert.match(res.headers.get("link"), /<\/stdx\/index\.md>/);
+  assert.equal(res.headers.get("x-markdown-tokens"), null);
+});
+
+test("a page with no twin falls back to the html rather than a 404", async () => {
+  const env = {
+    SITE_STDX: {
+      fetch: async (request) => {
+        const path = new URL(request.url).pathname;
+        if (path.endsWith(".md")) return new Response("missing\n", { status: 404 });
+        return new Response("<h1>kept</h1>", { headers: { "content-type": "text/html" } });
+      },
+    },
+  };
+  const res = await router.fetch(
+    new Request("https://baskingspot.dev/stdx/", { headers: { accept: "text/markdown" } }),
+    env,
+  );
+  assert.equal(res.status, 200);
+  assert.match(res.headers.get("content-type"), /^text\/html/);
+  assert.equal(await res.text(), "<h1>kept</h1>");
+});
+
+test("the front page negotiates markdown from the assets binding", async () => {
+  const seen = [];
+  const env = {
+    ASSETS: {
+      fetch: async (request) => {
+        const path = new URL(request.url).pathname;
+        seen.push(path);
+        return new Response(path === "/index.md" ? "# baskingspot\n" : "<h1>hi</h1>");
+      },
+    },
+  };
+  const md = await router.fetch(
+    new Request("https://baskingspot.dev/", { headers: { accept: "text/markdown" } }),
+    env,
+  );
+  assert.match(md.headers.get("content-type"), /^text\/markdown/);
+  assert.match(md.headers.get("link"), /<\/index\.md>/);
+  assert.equal(await md.text(), "# baskingspot\n");
+
+  const html = await router.fetch(
+    new Request("https://baskingspot.dev/", { headers: { accept: "text/html" } }),
+    env,
+  );
+  assert.match(await html.text(), /<h1>hi<\/h1>/);
+  assert.deepEqual(seen, ["/index.md", "/"]);
+});
