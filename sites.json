@@ -12,7 +12,7 @@
     },
     "testingx": {
       "repo": "testingx",
-      "description": "Plain-text tests and Go-style benchmarks for Zig 0.16.",
+      "description": "A plain-text test runner and Go-style benchmarks for Zig 0.16.",
       "kind": "library"
     }
   }
