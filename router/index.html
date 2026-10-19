@@ -118,25 +118,65 @@
         font-size: 1rem;
       }
       .agents {
-        margin-top: 2.5rem;
-        padding-top: 1.5rem;
-        border-top: 1px solid var(--rule);
+        margin-top: 3rem;
+        padding: 1.25rem 1.25rem 1.5rem;
+        border: 1px solid var(--rule);
+        border-radius: 0.5rem;
+        background: color-mix(in srgb, var(--fg) 3%, transparent);
         font-size: 1rem;
       }
       .agents h2 {
-        margin-top: 0;
+        margin: 0;
+        padding: 0;
+        border: 0;
+        color: var(--fg);
+        font-size: 1rem;
+        font-weight: 600;
+        letter-spacing: 0;
+        text-transform: none;
       }
-      .agents pre {
-        margin: 0.75rem 0 0;
+      .agents p {
+        margin-top: 0.35rem;
+        color: var(--muted);
+      }
+      .prompt {
+        position: relative;
+        margin-top: 1.25rem;
+      }
+      .prompt pre {
+        margin: 0;
         padding: 1rem;
         border: 1px solid var(--rule);
         border-radius: 0.375rem;
-        overflow-x: auto;
-        font-size: 0.9rem;
-        line-height: 1.5;
-      }
-      .agents code {
+        background: var(--bg);
+        /* The prompt is a sentence with a URL in it. Wrap it rather than make a
+           reader scroll sideways in a box whose end they cannot see. */
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
         font-family: ui-monospace, monospace;
+        font-size: 0.9rem;
+        line-height: 1.55;
+      }
+      .prompt button {
+        position: absolute;
+        top: -0.7rem;
+        right: 0.75rem;
+        padding: 0.2rem 0.6rem;
+        border: 1px solid var(--rule);
+        border-radius: 0.25rem;
+        background: var(--bg);
+        color: var(--fg);
+        font: inherit;
+        font-size: 0.8rem;
+        cursor: pointer;
+      }
+      .prompt button:hover {
+        border-color: currentColor;
+        color: var(--link-hover);
+      }
+      .prompt button:focus-visible {
+        outline: 2px solid var(--heat);
+        outline-offset: 2px;
       }
     </style>
   </head>
@@ -154,10 +194,13 @@
       <h2>For agents</h2>
       <p>
         Every page here has a markdown twin, and <a href="/llms.txt">/llms.txt</a> indexes the lot.
-        Paste this into your coding agent:
       </p>
-      <pre><code>When working in Zig, read https://baskingspot.dev/llms.txt first. It indexes the baskingspot libraries and links to a markdown version of each guide.</code></pre>
+      <div class="prompt">
+        <button type="button" data-copy="agent-prompt">Copy</button>
+        <pre><code id="agent-prompt">When working in Zig, start with https://baskingspot.dev/llms.txt. It indexes the libraries and links to markdown for each guide.</code></pre>
+      </div>
     </section>
     <footer><a href="https://github.com/baskingspot">github.com/baskingspot</a></footer>
+    <script src="/copy.js" defer></script>
   </body>
 </html>
