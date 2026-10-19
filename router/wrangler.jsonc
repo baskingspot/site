@@ -6,6 +6,9 @@
   "preview_urls": false,
   "assets": {
     "directory": "./public",
+    // Named so the Worker can fetch the front page itself. Without this the
+    // binding is absent, and `/` is a 500.
+    "binding": "ASSETS",
     "not_found_handling": "none",
     "html_handling": "auto-trailing-slash",
     // The front page is an asset, and assets answer before the Worker runs.
