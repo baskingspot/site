@@ -139,22 +139,22 @@ async function fetchTwin(fetcher, request, twin) {
 /**
  * The response for a markdown request: the twin's body, said to be markdown
  * whatever the asset layer thought, and kept out of search indexes so it does
- * not compete with the page it mirrors.
+ * not compete with the page it mirrors. The body is read so the size is known:
+ * an asset response is chunked and carries no content-length.
  */
-function markdownResponse(response, pathname, twin) {
+async function markdownResponse(response, pathname, twin) {
+  const body = await response.arrayBuffer();
   const headers = {
     "content-type": "text/markdown; charset=utf-8",
     vary: "accept",
     "x-robots-tag": "noindex, nofollow",
     link: discoveryLink(pathname, twin),
+    "content-length": String(body.byteLength),
+    // Four bytes to the token, the estimate Cloudflare's Markdown for Agents
+    // reports. Enough to size a context budget, not an exact count.
+    "x-markdown-tokens": String(Math.ceil(body.byteLength / 4)),
   };
-  const length = Number(response.headers.get("content-length"));
-  if (Number.isFinite(length) && length > 0) {
-    // A rough count, the same one Cloudflare's Markdown for Agents reports:
-    // about four bytes to the token for English prose and code.
-    headers["x-markdown-tokens"] = String(Math.ceil(length / 4));
-  }
-  return withHeaders(response, headers);
+  return withHeaders(new Response(body, { status: response.status, headers }), headers);
 }
 
 export default {
