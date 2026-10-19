@@ -185,3 +185,23 @@ test("the front page negotiates markdown from the assets binding", async () => {
   assert.match(await html.text(), /<h1>hi<\/h1>/);
   assert.deepEqual(seen, ["/index.md", "/"]);
 });
+
+test("a direct fetch of a twin is marked noindex", async () => {
+  const env = {
+    SITE_STDX: {
+      fetch: async () => new Response("# stdx\n", { headers: { "content-type": "text/markdown" } }),
+    },
+  };
+  const res = await router.fetch(new Request("https://baskingspot.dev/stdx/index.md"), env);
+  assert.equal(res.status, 200);
+  assert.match(res.headers.get("x-robots-tag"), /noindex/);
+  assert.match(res.headers.get("link"), /<\/llms\.txt>/);
+});
+
+test("a direct fetch of the front page twin is served from assets, noindex", async () => {
+  const env = { ASSETS: { fetch: async () => new Response("# baskingspot\n") } };
+  const res = await router.fetch(new Request("https://baskingspot.dev/index.md"), env);
+  assert.equal(res.status, 200);
+  assert.match(res.headers.get("x-robots-tag"), /noindex/);
+  assert.match(res.headers.get("link"), /<\/index\.md>/);
+});

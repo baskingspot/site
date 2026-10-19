@@ -12,9 +12,10 @@
     "not_found_handling": "none",
     "html_handling": "auto-trailing-slash",
     // The front page is an asset, and assets answer before the Worker runs.
-    // This is the only path the Worker needs to see, so it can send the
-    // markdown twin to an agent that asks for markdown.
-    "run_worker_first": ["/", "/index.html"],
+    // The landing page is named so it can negotiate markdown; `*.md` is named
+    // so a direct fetch of a twin is marked noindex, which the asset layer
+    // cannot do. Everything else is a site behind a service binding.
+    "run_worker_first": ["/", "/index.html", "/index.md", "/*.md"],
   },
   "services": [
     { "binding": "SITE_STDX", "service": "baskingspot-dev-stdx" },

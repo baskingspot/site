@@ -121,6 +121,11 @@ export function notFound(request) {
   );
 }
 
+/** The headers a markdown file gets: noindex, because the page is the real one. */
+function markdownFileHeaders(link) {
+  return { vary: "accept", link, "x-robots-tag": "noindex, nofollow" };
+}
+
 /**
  * The twin, or undefined when there is none. A 404 is cancelled rather than
  * read: the router falls back to the HTML page, and an unread body is a leak.
@@ -174,6 +179,13 @@ export default {
       return withHeaders(home, { vary: "accept", link: discoveryLink("/", twin) });
     }
 
+    // The front page's own twin. It is in run_worker_first with every other
+    // `.md` path, so that a direct fetch is marked noindex too.
+    if (url.pathname === "/index.md") {
+      const response = await env.ASSETS.fetch(request);
+      return withHeaders(response, markdownFileHeaders(discoveryLink("/", "/index.md")));
+    }
+
     const site = siteFor(env, url.pathname);
     if (site === undefined) return notFound(request);
 
@@ -185,6 +197,10 @@ export default {
 
     const response = await site.fetch(request);
     if (response.status === 404) return notFound(request);
-    return withHeaders(response, { vary: "accept", link: discoveryLink(url.pathname, twin) });
+    const link = discoveryLink(url.pathname, twin);
+    return withHeaders(
+      response,
+      url.pathname.endsWith(".md") ? markdownFileHeaders(link) : { vary: "accept", link },
+    );
   },
 };
