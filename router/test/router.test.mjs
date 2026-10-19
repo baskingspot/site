@@ -205,3 +205,17 @@ test("a direct fetch of the front page twin is served from assets, noindex", asy
   assert.match(res.headers.get("x-robots-tag"), /noindex/);
   assert.match(res.headers.get("link"), /<\/index\.md>/);
 });
+
+test("the roster and the router's service bindings name the same sites", () => {
+  // A site in sites.json with no binding is a 404 at its prefix; a binding with
+  // no site is a Worker nothing routes to. Both are silent until someone looks.
+  const { sites } = read("../../sites.json");
+  const config = readFileSync(new URL("../wrangler.jsonc", import.meta.url), "utf8")
+    .split("\n")
+    .filter((line) => !line.trim().startsWith("//"))
+    .join("\n");
+  const services = [...config.matchAll(/"binding": "SITE_([A-Z0-9_]+)"/g)].map((match) =>
+    match[1].toLowerCase().replaceAll("_", "-"),
+  );
+  assert.deepEqual(services.sort(), Object.keys(sites).sort());
+});

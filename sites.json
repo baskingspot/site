@@ -9,6 +9,11 @@
       "repo": "compress",
       "description": "Compression codecs in pure Zig: Snappy, DEFLATE, gzip, zlib, and Zstandard, plus a Brotli decoder.",
       "kind": "library"
+    },
+    "testingx": {
+      "repo": "testingx",
+      "description": "A test runner and Go-style benchmarks for Zig 0.16.",
+      "kind": "library"
     }
   }
 }
