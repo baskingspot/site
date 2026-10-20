@@ -220,15 +220,27 @@ test("the roster and the router's service bindings name the same sites", () => {
   assert.deepEqual(services.sort(), Object.keys(sites).sort());
 });
 
-test("a version path redirects to the tag archive", async () => {
+test("a version path redirects to the resolved archive", async () => {
   const env = { SITE_CLI: { fetch: async () => new Response("site") } };
-  const res = await router.fetch(new Request("https://baskingspot.dev/cli/v0.1.0"), env);
-  assert.equal(res.status, 302);
-  assert.equal(
-    res.headers.get("location"),
-    "https://github.com/baskingspot/cli/archive/refs/tags/v0.1.0.tar.gz",
-  );
-  assert.equal(res.headers.get("x-content-type-options"), "nosniff");
+  const real = globalThis.fetch;
+  globalThis.fetch = async () =>
+    new Response(null, {
+      status: 302,
+      headers: {
+        location: "https://codeload.github.com/baskingspot/cli/tar.gz/refs/tags/v0.1.0",
+      },
+    });
+  try {
+    const res = await router.fetch(new Request("https://baskingspot.dev/cli/v0.1.0"), env);
+    assert.equal(res.status, 302);
+    assert.equal(
+      res.headers.get("location"),
+      "https://codeload.github.com/baskingspot/cli/tar.gz/refs/tags/v0.1.0",
+    );
+    assert.equal(res.headers.get("x-content-type-options"), "nosniff");
+  } finally {
+    globalThis.fetch = real;
+  }
 });
 
 test("a version path for a slug with no site is the 404", async () => {

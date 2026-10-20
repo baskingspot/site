@@ -46,6 +46,23 @@ The router does three things with that:
 `just build` writes `/llms.txt` from `sites.json` in the llmstxt.org v2 format,
 and the front page's own copy at `/index.md`.
 
+## Install URLs
+
+`/<slug>/vX.Y.Z` answers with a 302. The Worker asks GitHub for the documented
+archive URL, `https://github.com/baskingspot/<slug>/archive/refs/tags/vX.Y.Z.tar.gz`,
+and passes on the `codeload.github.com` location GitHub returns. The client
+follows one redirect instead of two. If GitHub answers with something else, the
+Worker redirects to the documented archive URL, which still works. That makes
+the install command short and stable:
+
+```sh
+zig fetch --save https://baskingspot.dev/cli/v0.1.0
+```
+
+The router only redirects a slug that has a service binding, so a repo that is
+not registered is a 404. The version must be a full `vX.Y.Z`; a trailing slash
+is a site path.
+
 ## Add a site
 
 1. Add the slug, its repo, its `kind`, and a one-sentence description to `sites.json`: `"stdx": { "repo": "stdx", "kind": "library", "description": "..." }`. `kind` is `library` or `tool`, and picks the landing page column. The description is the entry on the page, and an unknown `kind` fails the build.

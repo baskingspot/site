@@ -35,6 +35,27 @@ export function siteFor(env, pathname) {
 }
 
 /**
+ * The archive URL for a tagged release, with GitHub's redirect resolved here so
+ * the client makes one hop instead of two. GitHub's documented archive URL is
+ * the source; the codeload URL is whatever GitHub points at today. Anything
+ * unexpected falls back to the documented URL, which still redirects.
+ */
+export async function archiveLocation(slug, version, fetcher = fetch) {
+  const source = `https://github.com/baskingspot/${slug}/archive/refs/tags/v${version}.tar.gz`;
+  try {
+    const response = await fetcher(source, { method: "HEAD", redirect: "manual" });
+    const location = response.headers.get("location");
+    await response.body?.cancel();
+    if (location !== null && location.startsWith(`https://codeload.github.com/baskingspot/${slug}/`)) {
+      return location;
+    }
+  } catch {
+    // A network failure or a changed shape falls through to the documented URL.
+  }
+  return source;
+}
+
+/**
  * `/<slug>/vX.Y.Z` is the install URL for a release. It redirects to the tag's
  * archive on GitHub, so `zig fetch --save` takes a short, stable URL. The
  * version must be a full semver triple; a trailing slash is a site path.
@@ -198,12 +219,8 @@ export default {
 
     const archive = versionArchive(url.pathname);
     if (archive !== undefined && siteFor(env, url.pathname) !== undefined) {
-      return withHeaders(
-        Response.redirect(
-          `https://github.com/baskingspot/${archive.slug}/archive/refs/tags/v${archive.version}.tar.gz`,
-          302,
-        ),
-      );
+      const location = await archiveLocation(archive.slug, archive.version);
+      return withHeaders(Response.redirect(location, 302));
     }
 
     const site = siteFor(env, url.pathname);

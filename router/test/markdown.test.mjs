@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 
 import {
+  archiveLocation,
   discoveryLink,
   markdownTwin,
   prefersMarkdown,
@@ -80,4 +81,37 @@ test("a version path names the tag archive", () => {
   assert.equal(versionArchive("/cli/v0.1.0/"), undefined);
   assert.equal(versionArchive("/cli/"), undefined);
   assert.equal(versionArchive("/"), undefined);
+});
+
+test("the archive redirect is resolved through GitHub", async () => {
+  const codeload = "https://codeload.github.com/baskingspot/cli/tar.gz/refs/tags/v0.1.0";
+  const fetcher = async (url, options) => {
+    assert.equal(url, "https://github.com/baskingspot/cli/archive/refs/tags/v0.1.0.tar.gz");
+    assert.equal(options.redirect, "manual");
+    return new Response(null, { status: 302, headers: { location: codeload } });
+  };
+  assert.equal(await archiveLocation("cli", "0.1.0", fetcher), codeload);
+});
+
+test("a missing or foreign location falls back to the documented URL", async () => {
+  const documented = "https://github.com/baskingspot/cli/archive/refs/tags/v0.1.0.tar.gz";
+  assert.equal(
+    await archiveLocation("cli", "0.1.0", async () => new Response(null, { status: 302 })),
+    documented,
+  );
+  assert.equal(
+    await archiveLocation(
+      "cli",
+      "0.1.0",
+      async () =>
+        new Response(null, { status: 302, headers: { location: "https://elsewhere.test/x" } }),
+    ),
+    documented,
+  );
+  assert.equal(
+    await archiveLocation("cli", "0.1.0", async () => {
+      throw new Error("offline");
+    }),
+    documented,
+  );
 });
