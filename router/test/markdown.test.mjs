@@ -117,4 +117,3 @@ test("a foreign location or a failure falls back to the documented URL", async (
     assert.equal(await resolveArchive("cli", "0.1.0", fetcher), documented);
   }
 });
-
