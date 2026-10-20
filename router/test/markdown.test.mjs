@@ -1,7 +1,13 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 
-import { discoveryLink, markdownTwin, prefersMarkdown, quality } from "../src/index.mjs";
+import {
+  discoveryLink,
+  markdownTwin,
+  prefersMarkdown,
+  quality,
+  versionArchive,
+} from "../src/index.mjs";
 
 const accept = (value) =>
   new Request("https://baskingspot.dev/stdx/", { headers: { accept: value } });
@@ -62,4 +68,16 @@ test("a page advertises its twin and the index that covers it", () => {
 
 test("a page with no twin still points at the index", () => {
   assert.equal(discoveryLink("/stdx/style.css", undefined), '</llms.txt>; rel="describedby"');
+});
+
+test("a version path names the tag archive", () => {
+  assert.deepEqual(versionArchive("/cli/v0.1.0"), { slug: "cli", version: "0.1.0" });
+  assert.deepEqual(versionArchive("/zig-benchmark/v12.0.3"), {
+    slug: "zig-benchmark",
+    version: "12.0.3",
+  });
+  assert.equal(versionArchive("/cli/v0.1"), undefined);
+  assert.equal(versionArchive("/cli/v0.1.0/"), undefined);
+  assert.equal(versionArchive("/cli/"), undefined);
+  assert.equal(versionArchive("/"), undefined);
 });

@@ -35,6 +35,16 @@ export function siteFor(env, pathname) {
 }
 
 /**
+ * `/<slug>/vX.Y.Z` is the install URL for a release. It redirects to the tag's
+ * archive on GitHub, so `zig fetch --save` takes a short, stable URL. The
+ * version must be a full semver triple; a trailing slash is a site path.
+ */
+export function versionArchive(pathname) {
+  const match = /^\/([a-z0-9-]+)\/v(\d+\.\d+\.\d+)$/.exec(pathname);
+  return match === null ? undefined : { slug: match[1], version: match[2] };
+}
+
+/**
  * The markdown twin of a page path. Sites are built by Zola, so a page is a
  * directory holding index.html: `/stdx/` is `/stdx/index.md`, and `/stdx` is
  * the same page before the trailing-slash redirect. A path with an extension
@@ -184,6 +194,16 @@ export default {
     if (url.pathname === "/index.md") {
       const response = await env.ASSETS.fetch(request);
       return withHeaders(response, markdownFileHeaders(discoveryLink("/", "/index.md")));
+    }
+
+    const archive = versionArchive(url.pathname);
+    if (archive !== undefined && siteFor(env, url.pathname) !== undefined) {
+      return withHeaders(
+        Response.redirect(
+          `https://github.com/baskingspot/${archive.slug}/archive/refs/tags/v${archive.version}.tar.gz`,
+          302,
+        ),
+      );
     }
 
     const site = siteFor(env, url.pathname);
