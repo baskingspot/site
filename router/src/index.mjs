@@ -49,9 +49,8 @@ export function versionArchive(pathname) {
 /**
  * Resolve a tag's archive. GitHub's documented archive URL is the source; the
  * `codeload` location it redirects to is passed on, so the client makes one hop
- * instead of two. A 404 is definitive and becomes our own answer. A network
- * failure or anything unexpected falls back to the documented URL, which still
- * works; the client can decide what to do with GitHub's answer.
+ * instead of two. Nothing is validated: a tag that does not exist 404s at
+ * codeload, exactly as it does when fetched from GitHub directly.
  */
 export async function resolveArchive(slug, version, fetcher = fetch) {
   const source = `https://github.com/baskingspot/${slug}/archive/refs/tags/v${version}.tar.gz`;
@@ -63,13 +62,12 @@ export async function resolveArchive(slug, version, fetcher = fetch) {
       location !== null &&
       location.startsWith(`https://codeload.github.com/baskingspot/${slug}/`)
     ) {
-      return { kind: "redirect", location };
+      return location;
     }
-    if (response.status === 404) return { kind: "missing" };
   } catch {
     // Fall through to the documented URL.
   }
-  return { kind: "fallback", location: source };
+  return source;
 }
 
 /**
@@ -146,25 +144,6 @@ export function withHeaders(response, extra = {}) {
     statusText: response.statusText,
     headers,
   });
-}
-
-/** No such tag: a plain answer for a machine, not the branded page. */
-export function missingVersion(slug, version, request) {
-  const body =
-    request.method === "HEAD"
-      ? null
-      : `no such release: ${slug} v${version}\n` +
-        `Tags are listed at https://github.com/baskingspot/${slug}/tags\n`;
-  return withHeaders(
-    new Response(body, {
-      status: 404,
-      headers: {
-        "content-type": "text/plain; charset=utf-8",
-        "cache-control": "no-cache",
-        "x-robots-tag": "noindex",
-      },
-    }),
-  );
 }
 
 /** The branded 404. A HEAD request gets the headers and no body. */
@@ -250,11 +229,8 @@ export default {
       if (stripped !== url.pathname) {
         return withHeaders(Response.redirect(`${url.origin}${stripped}`, 308));
       }
-      const resolved = await resolveArchive(archive.slug, archive.version);
-      if (resolved.kind === "missing") {
-        return missingVersion(archive.slug, archive.version, request);
-      }
-      return withHeaders(Response.redirect(resolved.location, 302));
+      const location = await resolveArchive(archive.slug, archive.version);
+      return withHeaders(Response.redirect(location, 302));
     }
 
     const site = siteFor(env, url.pathname);

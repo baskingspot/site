@@ -100,10 +100,7 @@ test("the archive redirect is resolved through GitHub", async () => {
     assert.equal(options.redirect, "manual");
     return new Response(null, { status: 302, headers: { location: codeload } });
   };
-  assert.deepEqual(await resolveArchive("cli", "0.1.0", fetcher), {
-    kind: "redirect",
-    location: codeload,
-  });
+  assert.equal(await resolveArchive("cli", "0.1.0", fetcher), codeload);
 });
 
 test("a foreign location or a failure falls back to the documented URL", async () => {
@@ -117,16 +114,7 @@ test("a foreign location or a failure falls back to the documented URL", async (
     },
     async () => new Response(null, { status: 503 }),
   ]) {
-    assert.deepEqual(await resolveArchive("cli", "0.1.0", fetcher), {
-      kind: "fallback",
-      location: documented,
-    });
+    assert.equal(await resolveArchive("cli", "0.1.0", fetcher), documented);
   }
 });
 
-test("a 404 is a definitive miss", async () => {
-  assert.deepEqual(
-    await resolveArchive("cli", "9.9.9", async () => new Response(null, { status: 404 })),
-    { kind: "missing" },
-  );
-});

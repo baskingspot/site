@@ -54,9 +54,9 @@ other tag shape is not a version path; use GitHub for those.
 
 The Worker asks GitHub for the documented archive URL and passes on the
 `codeload.github.com` location GitHub returns, so the client follows one
-redirect instead of two. A 404 from GitHub becomes a plain-text 404 from the
-router. A network failure or an unexpected answer falls back to the documented
-archive URL, which still works.
+redirect instead of two. Nothing is validated: a tag that does not exist 404s
+at codeload, the same as when it is fetched from GitHub directly. A network
+failure or an unexpected answer falls back to the documented archive URL.
 
 The install command is therefore short and stable:
 
