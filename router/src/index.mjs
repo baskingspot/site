@@ -41,9 +41,15 @@ export function siteFor(env, pathname) {
  */
 const SEMVER = String.raw`v\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?`;
 
+/** The archive extensions GitHub serves. The canonical one is .tar.gz. */
+const ARCHIVE_EXTENSIONS = [".tar.gz", ".zip"];
+
 export function versionArchive(pathname) {
-  const match = new RegExp(`^/([a-z0-9-]+)/(${SEMVER})$`).exec(pathname);
-  return match === null ? undefined : { slug: match[1], version: match[2].slice(1) };
+  const extension = ARCHIVE_EXTENSIONS.find((ext) => pathname.endsWith(ext)) ?? "";
+  const base = extension === "" ? pathname : pathname.slice(0, -extension.length);
+  const match = new RegExp(`^/([a-z0-9-]+)/(${SEMVER})$`).exec(base);
+  if (match === null) return undefined;
+  return { slug: match[1], version: match[2].slice(1), extension };
 }
 
 /**
@@ -52,8 +58,8 @@ export function versionArchive(pathname) {
  * instead of two. Nothing is validated: a tag that does not exist 404s at
  * codeload, exactly as it does when fetched from GitHub directly.
  */
-export async function resolveArchive(slug, version, fetcher = fetch) {
-  const source = `https://github.com/baskingspot/${slug}/archive/refs/tags/v${version}.tar.gz`;
+export async function resolveArchive(slug, version, extension = ".tar.gz", fetcher = fetch) {
+  const source = `https://github.com/baskingspot/${slug}/archive/refs/tags/v${version}${extension}`;
   try {
     const response = await fetcher(source, { method: "HEAD", redirect: "manual" });
     const location = response.headers.get("location");
@@ -226,10 +232,13 @@ export default {
     const stripped = url.pathname.replace(/\/+$/, "");
     const archive = versionArchive(stripped);
     if (archive !== undefined && siteFor(env, stripped) !== undefined) {
+      if (archive.extension === "") {
+        return withHeaders(Response.redirect(`${url.origin}${stripped}.tar.gz`, 308));
+      }
       if (stripped !== url.pathname) {
         return withHeaders(Response.redirect(`${url.origin}${stripped}`, 308));
       }
-      const location = await resolveArchive(archive.slug, archive.version);
+      const location = await resolveArchive(archive.slug, archive.version, archive.extension);
       return withHeaders(Response.redirect(location, 302));
     }
 

@@ -72,22 +72,40 @@ test("a page with no twin still points at the index", () => {
 });
 
 test("a version path names the tag archive", () => {
-  assert.deepEqual(versionArchive("/cli/v0.1.0"), { slug: "cli", version: "0.1.0" });
-  assert.deepEqual(versionArchive("/cli/v0.1.0-rc.1"), {
+  assert.deepEqual(versionArchive("/cli/v0.1.0.tar.gz"), {
+    slug: "cli",
+    version: "0.1.0",
+    extension: ".tar.gz",
+  });
+  assert.deepEqual(versionArchive("/cli/v0.1.0.zip"), {
+    slug: "cli",
+    version: "0.1.0",
+    extension: ".zip",
+  });
+  assert.deepEqual(versionArchive("/cli/v0.1.0"), {
+    slug: "cli",
+    version: "0.1.0",
+    extension: "",
+  });
+  assert.deepEqual(versionArchive("/cli/v0.1.0-rc.1.tar.gz"), {
     slug: "cli",
     version: "0.1.0-rc.1",
+    extension: ".tar.gz",
   });
-  assert.deepEqual(versionArchive("/cli/v1.2.3+build.5"), {
+  assert.deepEqual(versionArchive("/cli/v1.2.3+build.5.tar.gz"), {
     slug: "cli",
     version: "1.2.3+build.5",
+    extension: ".tar.gz",
   });
-  assert.deepEqual(versionArchive("/zig-benchmark/v12.0.3"), {
+  assert.deepEqual(versionArchive("/zig-benchmark/v12.0.3.tar.gz"), {
     slug: "zig-benchmark",
     version: "12.0.3",
+    extension: ".tar.gz",
   });
   assert.equal(versionArchive("/cli/v0.1"), undefined);
   assert.equal(versionArchive("/cli/v0.1.0junk"), undefined);
   assert.equal(versionArchive("/cli/main"), undefined);
+  assert.equal(versionArchive("/cli/v0.1.0.tgz"), undefined);
   assert.equal(versionArchive("/cli/v0.1.0/"), undefined);
   assert.equal(versionArchive("/cli/"), undefined);
   assert.equal(versionArchive("/"), undefined);
@@ -100,7 +118,7 @@ test("the archive redirect is resolved through GitHub", async () => {
     assert.equal(options.redirect, "manual");
     return new Response(null, { status: 302, headers: { location: codeload } });
   };
-  assert.equal(await resolveArchive("cli", "0.1.0", fetcher), codeload);
+  assert.equal(await resolveArchive("cli", "0.1.0", ".tar.gz", fetcher), codeload);
 });
 
 test("a foreign location or a failure falls back to the documented URL", async () => {
@@ -114,6 +132,6 @@ test("a foreign location or a failure falls back to the documented URL", async (
     },
     async () => new Response(null, { status: 503 }),
   ]) {
-    assert.equal(await resolveArchive("cli", "0.1.0", fetcher), documented);
+    assert.equal(await resolveArchive("cli", "0.1.0", ".tar.gz", fetcher), documented);
   }
 });

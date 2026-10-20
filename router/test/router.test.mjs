@@ -221,6 +221,7 @@ test("the roster and the router's service bindings name the same sites", () => {
 });
 
 test("a version path redirects to the resolved archive", async () => {
+  // The canonical form ends in .tar.gz; see the extensionless test below.
   const env = { SITE_CLI: { fetch: async () => new Response("site") } };
   const real = globalThis.fetch;
   globalThis.fetch = async () =>
@@ -231,7 +232,7 @@ test("a version path redirects to the resolved archive", async () => {
       },
     });
   try {
-    const res = await router.fetch(new Request("https://baskingspot.dev/cli/v0.1.0"), env);
+    const res = await router.fetch(new Request("https://baskingspot.dev/cli/v0.1.0.tar.gz"), env);
     assert.equal(res.status, 302);
     assert.equal(
       res.headers.get("location"),
@@ -248,11 +249,18 @@ test("a version path for a slug with no site is the 404", async () => {
   assert.equal(res.status, 404);
 });
 
+test("the extensionless version path redirects to the archive form", async () => {
+  const env = { SITE_CLI: { fetch: async () => new Response("site") } };
+  const res = await router.fetch(new Request("https://baskingspot.dev/cli/v0.1.0"), env);
+  assert.equal(res.status, 308);
+  assert.equal(res.headers.get("location"), "https://baskingspot.dev/cli/v0.1.0.tar.gz");
+});
+
 test("a version path with a trailing slash redirects to the canonical form", async () => {
   const env = { SITE_CLI: { fetch: async () => new Response("site") } };
   const res = await router.fetch(new Request("https://baskingspot.dev/cli/v0.1.0/"), env);
   assert.equal(res.status, 308);
-  assert.equal(res.headers.get("location"), "https://baskingspot.dev/cli/v0.1.0");
+  assert.equal(res.headers.get("location"), "https://baskingspot.dev/cli/v0.1.0.tar.gz");
 });
 
 test("a GitHub failure falls back to the documented archive URL", async () => {
@@ -262,7 +270,7 @@ test("a GitHub failure falls back to the documented archive URL", async () => {
     throw new Error("offline");
   };
   try {
-    const res = await router.fetch(new Request("https://baskingspot.dev/cli/v0.1.0"), env);
+    const res = await router.fetch(new Request("https://baskingspot.dev/cli/v0.1.0.tar.gz"), env);
     assert.equal(res.status, 302);
     assert.equal(
       res.headers.get("location"),

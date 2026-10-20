@@ -48,9 +48,13 @@ and the front page's own copy at `/index.md`.
 
 ## Install URLs
 
-`/<slug>/<tag>` is the install URL for a release, where the tag is semver
-shaped: `v0.1.0`, `v0.2.0-rc.1`, `v1.0.0+build.5`. A branch, `latest`, or any
-other tag shape is not a version path; use GitHub for those.
+`/<slug>/<tag>.tar.gz` is the install URL for a release, where the tag is semver
+shaped: `v0.1.0.tar.gz`, `v0.2.0-rc.1.tar.gz`, `v1.0.0+build.5.tar.gz`. GitHub's
+`.zip` archive is served too. A branch, `latest`, or any other tag shape is not
+a version path; use GitHub for those.
+
+The extension is part of the URL on purpose: tools such as zon2nix decide how to
+unpack a package from the URL's extension. `.tar.gz` is the documented form.
 
 The Worker asks GitHub for the documented archive URL and passes on the
 `codeload.github.com` location GitHub returns, so the client follows one
@@ -61,13 +65,14 @@ failure or an unexpected answer falls back to the documented archive URL.
 The install command is therefore short and stable:
 
 ```sh
-zig fetch --save https://baskingspot.dev/cli/v0.1.0
+zig fetch --save https://baskingspot.dev/cli/v0.1.0.tar.gz
 ```
 
-`/<slug>/<tag>/` with a trailing slash is a 308 to the form without one. That
-keeps the rule simple: a trailing slash is the docs site, no trailing slash is
-a machine endpoint. The router only answers a slug that has a service binding,
-so a repo that is not registered is a 404.
+A version path without an extension is a 308 to the `.tar.gz` form, and one
+with a trailing slash is a 308 to the form without it. That keeps the rule
+simple: a trailing slash is the docs site, no trailing slash is a machine
+endpoint. The router only answers a slug that has a service binding, so a repo
+that is not registered is a 404.
 
 ## Add a site
 
