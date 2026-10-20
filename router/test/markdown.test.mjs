@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 
 import {
-  archiveLocation,
+  resolveArchive,
   discoveryLink,
   markdownTwin,
   prefersMarkdown,
@@ -73,11 +73,21 @@ test("a page with no twin still points at the index", () => {
 
 test("a version path names the tag archive", () => {
   assert.deepEqual(versionArchive("/cli/v0.1.0"), { slug: "cli", version: "0.1.0" });
+  assert.deepEqual(versionArchive("/cli/v0.1.0-rc.1"), {
+    slug: "cli",
+    version: "0.1.0-rc.1",
+  });
+  assert.deepEqual(versionArchive("/cli/v1.2.3+build.5"), {
+    slug: "cli",
+    version: "1.2.3+build.5",
+  });
   assert.deepEqual(versionArchive("/zig-benchmark/v12.0.3"), {
     slug: "zig-benchmark",
     version: "12.0.3",
   });
   assert.equal(versionArchive("/cli/v0.1"), undefined);
+  assert.equal(versionArchive("/cli/v0.1.0junk"), undefined);
+  assert.equal(versionArchive("/cli/main"), undefined);
   assert.equal(versionArchive("/cli/v0.1.0/"), undefined);
   assert.equal(versionArchive("/cli/"), undefined);
   assert.equal(versionArchive("/"), undefined);
@@ -90,28 +100,33 @@ test("the archive redirect is resolved through GitHub", async () => {
     assert.equal(options.redirect, "manual");
     return new Response(null, { status: 302, headers: { location: codeload } });
   };
-  assert.equal(await archiveLocation("cli", "0.1.0", fetcher), codeload);
+  assert.deepEqual(await resolveArchive("cli", "0.1.0", fetcher), {
+    kind: "redirect",
+    location: codeload,
+  });
 });
 
-test("a missing or foreign location falls back to the documented URL", async () => {
+test("a foreign location or a failure falls back to the documented URL", async () => {
   const documented = "https://github.com/baskingspot/cli/archive/refs/tags/v0.1.0.tar.gz";
-  assert.equal(
-    await archiveLocation("cli", "0.1.0", async () => new Response(null, { status: 302 })),
-    documented,
-  );
-  assert.equal(
-    await archiveLocation(
-      "cli",
-      "0.1.0",
-      async () =>
-        new Response(null, { status: 302, headers: { location: "https://elsewhere.test/x" } }),
-    ),
-    documented,
-  );
-  assert.equal(
-    await archiveLocation("cli", "0.1.0", async () => {
+  for (const fetcher of [
+    async () => new Response(null, { status: 302 }),
+    async () =>
+      new Response(null, { status: 302, headers: { location: "https://elsewhere.test/x" } }),
+    async () => {
       throw new Error("offline");
-    }),
-    documented,
+    },
+    async () => new Response(null, { status: 503 }),
+  ]) {
+    assert.deepEqual(await resolveArchive("cli", "0.1.0", fetcher), {
+      kind: "fallback",
+      location: documented,
+    });
+  }
+});
+
+test("a 404 is a definitive miss", async () => {
+  assert.deepEqual(
+    await resolveArchive("cli", "9.9.9", async () => new Response(null, { status: 404 })),
+    { kind: "missing" },
   );
 });

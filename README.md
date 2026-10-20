@@ -48,20 +48,26 @@ and the front page's own copy at `/index.md`.
 
 ## Install URLs
 
-`/<slug>/vX.Y.Z` answers with a 302. The Worker asks GitHub for the documented
-archive URL, `https://github.com/baskingspot/<slug>/archive/refs/tags/vX.Y.Z.tar.gz`,
-and passes on the `codeload.github.com` location GitHub returns. The client
-follows one redirect instead of two. If GitHub answers with something else, the
-Worker redirects to the documented archive URL, which still works. That makes
-the install command short and stable:
+`/<slug>/<tag>` is the install URL for a release, where the tag is semver
+shaped: `v0.1.0`, `v0.2.0-rc.1`, `v1.0.0+build.5`. A branch, `latest`, or any
+other tag shape is not a version path; use GitHub for those.
+
+The Worker asks GitHub for the documented archive URL and passes on the
+`codeload.github.com` location GitHub returns, so the client follows one
+redirect instead of two. A 404 from GitHub becomes a plain-text 404 from the
+router. A network failure or an unexpected answer falls back to the documented
+archive URL, which still works.
+
+The install command is therefore short and stable:
 
 ```sh
 zig fetch --save https://baskingspot.dev/cli/v0.1.0
 ```
 
-The router only redirects a slug that has a service binding, so a repo that is
-not registered is a 404. The version must be a full `vX.Y.Z`; a trailing slash
-is a site path.
+`/<slug>/<tag>/` with a trailing slash is a 308 to the form without one. That
+keeps the rule simple: a trailing slash is the docs site, no trailing slash is
+a machine endpoint. The router only answers a slug that has a service binding,
+so a repo that is not registered is a 404.
 
 ## Add a site
 

@@ -247,3 +247,42 @@ test("a version path for a slug with no site is the 404", async () => {
   const res = await router.fetch(new Request("https://baskingspot.dev/nope/v0.1.0"), {});
   assert.equal(res.status, 404);
 });
+
+test("a version path with a trailing slash redirects to the canonical form", async () => {
+  const env = { SITE_CLI: { fetch: async () => new Response("site") } };
+  const res = await router.fetch(new Request("https://baskingspot.dev/cli/v0.1.0/"), env);
+  assert.equal(res.status, 308);
+  assert.equal(res.headers.get("location"), "https://baskingspot.dev/cli/v0.1.0");
+});
+
+test("a missing version is our own plain 404", async () => {
+  const env = { SITE_CLI: { fetch: async () => new Response("site") } };
+  const real = globalThis.fetch;
+  globalThis.fetch = async () => new Response(null, { status: 404 });
+  try {
+    const res = await router.fetch(new Request("https://baskingspot.dev/cli/v9.9.9"), env);
+    assert.equal(res.status, 404);
+    assert.match(res.headers.get("content-type"), /^text\/plain/);
+    assert.match(await res.text(), /no such release: cli v9\.9\.9/);
+  } finally {
+    globalThis.fetch = real;
+  }
+});
+
+test("a GitHub failure falls back to the documented archive URL", async () => {
+  const env = { SITE_CLI: { fetch: async () => new Response("site") } };
+  const real = globalThis.fetch;
+  globalThis.fetch = async () => {
+    throw new Error("offline");
+  };
+  try {
+    const res = await router.fetch(new Request("https://baskingspot.dev/cli/v0.1.0"), env);
+    assert.equal(res.status, 302);
+    assert.equal(
+      res.headers.get("location"),
+      "https://github.com/baskingspot/cli/archive/refs/tags/v0.1.0.tar.gz",
+    );
+  } finally {
+    globalThis.fetch = real;
+  }
+});
