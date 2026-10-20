@@ -19,6 +19,11 @@
       "repo": "tls",
       "description": "Sans-I/O TLS 1.3 in Zig: no sockets, no engine allocations, caller-owned buffers.",
       "kind": "library"
+    },
+    "cli": {
+      "repo": "cli",
+      "description": "A cursor over argv for Zig 0.16: short clusters, long options, and no schema.",
+      "kind": "library"
     }
   }
 }
