@@ -23,5 +23,6 @@
     { "binding": "SITE_TESTINGX", "service": "baskingspot-dev-testingx" },
     { "binding": "SITE_TLS", "service": "baskingspot-dev-tls" },
     { "binding": "SITE_CLI", "service": "baskingspot-dev-cli" },
+    { "binding": "SITE_FASTMEM", "service": "baskingspot-dev-fastmem" },
   ],
 }
