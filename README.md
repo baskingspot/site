@@ -71,8 +71,10 @@ zig fetch --save https://baskingspot.dev/cli/v0.1.0.tar.gz
 A version path without an extension is a 308 to the `.tar.gz` form, and one
 with a trailing slash is a 308 to the form without it. That keeps the rule
 simple: a trailing slash is the docs site, no trailing slash is a machine
-endpoint. The router only answers a slug that has a service binding, so a repo
-that is not registered is a 404.
+endpoint. The router only answers a slug that has a service binding, so a repo that is
+not registered is a 404. It serves source archives only: a program's binaries
+are the release assets on GitHub, and the package-manager channels built on
+them. Do not add a route that mirrors them.
 
 ## Add a site
 
