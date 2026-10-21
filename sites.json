@@ -24,11 +24,6 @@
       "repo": "cli",
       "description": "Command-line flags for Zig, the getopt_long way: -xvf, --out=file, and a while loop.",
       "kind": "library"
-    },
-    "fastmem": {
-      "repo": "fastmem",
-      "description": "Fast memcpy, memmove, and memset for Zig.",
-      "kind": "library"
     }
   }
 }
