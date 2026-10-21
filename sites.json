@@ -27,7 +27,7 @@
     },
     "fastmem": {
       "repo": "fastmem",
-      "description": "Fast memcpy, memmove, and memset for Zig, with kernels tuned per CPU model.",
+      "description": "Fast memcpy, memmove, and memset for Zig.",
       "kind": "library"
     }
   }
