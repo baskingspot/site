@@ -7,7 +7,7 @@
     },
     "compress": {
       "repo": "compress",
-      "description": "Compression codecs in pure Zig: Snappy, DEFLATE, gzip, zlib, and Zstandard, plus a Brotli decoder.",
+      "description": "Compression codecs in pure Zig: Snappy, DEFLATE, gzip, zlib, Zstandard, and Brotli.",
       "kind": "library"
     },
     "testingx": {
