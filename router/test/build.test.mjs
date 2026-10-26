@@ -7,10 +7,16 @@ import {
   renderSecurityTxt,
   renderSitemap,
   renderSites,
+  renderSkills,
 } from "../build.mjs";
 
 const lib = (description) => ({ kind: "library", description });
 const tool = (description) => ({ kind: "tool", description });
+const skill = (name) => ({
+  name,
+  url: `https://github.com/baskingspot/skills/tree/main/skills/${name}`,
+  description: `${name} desc.`,
+});
 
 test("a site becomes a link to its prefix, in roster order", () => {
   const html = renderSites({ stdx: lib("std."), zeta: lib("z.") });
@@ -94,4 +100,31 @@ test("the front page has a markdown twin with the same roster", () => {
   assert.match(text, /^# baskingspot\n/);
   assert.match(text, /\[stdx\]\(https:\/\/baskingspot\.dev\/stdx\/\)/);
   assert.match(text, /llms\.txt/);
+});
+
+test("llms.txt lists the skills between the roster and Optional", () => {
+  const text = renderLlmsTxt({ stdx: lib("std.") }, [skill("zig-016")]);
+  assert.match(text, /^## Skills$/m);
+  assert.match(text, /^- \[zig-016\]\(https:\/\/github\.com\/baskingspot\/skills/m);
+  assert.ok(text.indexOf("## Libraries") < text.indexOf("## Skills"));
+  assert.ok(text.indexOf("## Skills") < text.indexOf("## Optional"));
+});
+
+test("llms.txt has no skills section when the org ships none", () => {
+  const text = renderLlmsTxt({ stdx: lib("std.") });
+  assert.doesNotMatch(text, /## Skills/);
+});
+
+test("the landing page gives the skills their own section", () => {
+  const html = renderSkills([skill("zig-016"), skill("tiger-style")]);
+  assert.match(html, /<h2>Agent skills<\/h2>/);
+  assert.match(html, /href="https:\/\/github\.com\/baskingspot\/skills/);
+  assert.ok(
+    html.indexOf('href="https://github.com/baskingspot/skills/tree/main/skills/zig-016"') <
+      html.indexOf("tiger-style"),
+  );
+});
+
+test("the landing page has no skills section when the org ships none", () => {
+  assert.equal(renderSkills([]), "");
 });

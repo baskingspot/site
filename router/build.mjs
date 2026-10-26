@@ -55,12 +55,29 @@ export function renderSites(sites) {
 const ORIGIN = "https://baskingspot.dev";
 
 /**
+ * The org's agent skills, which live in baskingspot/skills rather than behind
+ * this router. They get a section of their own in the roster, the landing page,
+ * and llms.txt, because a skill is the thing that teaches an agent the house
+ * style and a guide cannot.
+ */
+export function renderSkills(skills) {
+  if (skills.length === 0) return "";
+  const items = skills
+    .map(
+      (skill) =>
+        `          <li><a href="${escapeHtml(skill.url)}">${escapeHtml(skill.name)}</a><p>${escapeHtml(skill.description)}</p></li>`,
+    )
+    .join("\n");
+  return `        <section>\n          <h2>Agent skills</h2>\n          <ul>\n${items}\n          </ul>\n        </section>`;
+}
+
+/**
  * llms.txt, llmstxt.org v2: an H1, a blockquote summary, prose, then one H2
  * list per kind. The prose is the contract: every directory has an `index.md`
  * twin, and the router serves it when the request asks for markdown. The twin
  * is the source the site is built from, not an HTML-to-markdown conversion.
  */
-export function renderLlmsTxt(sites) {
+export function renderLlmsTxt(sites, skills = []) {
   const sections = COLUMNS.map(({ kind, title }) => {
     const entries = Object.entries(sites).filter(([, site]) => site.kind === kind);
     if (entries.length === 0) return "";
@@ -82,6 +99,7 @@ export function renderLlmsTxt(sites) {
     "and this site sends the copy instead of the HTML.",
     "",
     ...sections,
+    ...(skills.length === 0 ? [] : [renderSkillList(skills)]),
     "## Optional",
     "",
     "- [baskingspot on GitHub](https://github.com/baskingspot): the source for every project listed above.",
@@ -89,12 +107,20 @@ export function renderLlmsTxt(sites) {
   ].join("\n");
 }
 
+/** One H2 list of the skills, for the two markdown twins. */
+function renderSkillList(skills) {
+  const items = skills
+    .map((skill) => `- [${skill.name}](${skill.url}): ${skill.description}`)
+    .join("\n");
+  return `## Skills\n\n${items}\n`;
+}
+
 /**
  * The landing page as markdown: the same roster, minus the styling. This is
  * the `/index.md` twin, so an agent that lands on the front page has the same
  * one-fetch path the library pages have.
  */
-export function renderIndexMarkdown(sites) {
+export function renderIndexMarkdown(sites, skills = []) {
   const sections = COLUMNS.map(({ kind, title }) => {
     const entries = Object.entries(sites).filter(([, site]) => site.kind === kind);
     if (entries.length === 0) return "";
@@ -110,6 +136,7 @@ export function renderIndexMarkdown(sites) {
     "> Zig is cold-blooded. Come bask. Libraries between std and your application.",
     "",
     ...sections,
+    ...(skills.length === 0 ? [] : [renderSkillList(skills)]),
     "## For agents",
     "",
     `- [llms.txt](${ORIGIN}/llms.txt): this roster, in the llmstxt.org format.`,
@@ -144,15 +171,19 @@ export function renderSecurityTxt(now) {
 
 if (import.meta.main) {
   const { sites } = JSON.parse(readFileSync(here("../sites.json"), "utf8"));
+  const { skills } = JSON.parse(readFileSync(here("skills.json"), "utf8"));
   const template = readFileSync(here("index.html"), "utf8");
   if (!template.includes("<!-- sites -->"))
     throw new Error("index.html has no <!-- sites --> marker");
   rmSync(here("public"), { recursive: true, force: true });
   mkdirSync(here("public"));
   cpSync(here("static"), here("public"), { recursive: true });
-  writeFileSync(here("public/index.html"), template.replace("<!-- sites -->", renderSites(sites)));
-  writeFileSync(here("public/index.md"), renderIndexMarkdown(sites));
-  writeFileSync(here("public/llms.txt"), renderLlmsTxt(sites));
+  writeFileSync(
+    here("public/index.html"),
+    template.replace("<!-- sites -->", `${renderSites(sites)}\n${renderSkills(skills)}`),
+  );
+  writeFileSync(here("public/index.md"), renderIndexMarkdown(sites, skills));
+  writeFileSync(here("public/llms.txt"), renderLlmsTxt(sites, skills));
   writeFileSync(here("public/sitemap.xml"), renderSitemap(sites));
   mkdirSync(here("public/.well-known"));
   writeFileSync(here("public/.well-known/security.txt"), renderSecurityTxt(new Date()));

@@ -1,0 +1,14 @@
+{
+  "skills": [
+    {
+      "name": "zig-016",
+      "url": "https://github.com/baskingspot/skills/tree/main/skills/zig-016",
+      "description": "Write Zig 0.16 with tested primitives, testingx, and the house style."
+    },
+    {
+      "name": "tiger-style",
+      "url": "https://github.com/baskingspot/skills/tree/main/skills/tiger-style",
+      "description": "TigerBeetle's Tiger Style, restated. Safety over performance over developer experience."
+    }
+  ]
+}
