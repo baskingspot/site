@@ -29,6 +29,11 @@
       "repo": "fastmem",
       "description": "Fast memcpy, memmove, and memset for Zig.",
       "kind": "library"
+    },
+    "toml": {
+      "repo": "toml",
+      "description": "TOML 1.1.0 in Zig: a strict parser, a value tree, and a writer.",
+      "kind": "library"
     }
   }
 }
