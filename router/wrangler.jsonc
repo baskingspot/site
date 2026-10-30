@@ -25,5 +25,6 @@
     { "binding": "SITE_CLI", "service": "baskingspot-dev-cli" },
     { "binding": "SITE_FASTMEM", "service": "baskingspot-dev-fastmem" },
     { "binding": "SITE_TOML", "service": "baskingspot-dev-toml" },
+    { "binding": "SITE_HTML", "service": "baskingspot-dev-html" },
   ],
 }
