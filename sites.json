@@ -35,6 +35,11 @@
       "description": "TOML 1.1.0 in Zig: a strict parser, a value tree, and a writer.",
       "kind": "library"
     },
+    "json5": {
+      "repo": "json5",
+      "description": "JSON5 in Zig: unquoted keys, single quotes, hex numbers, NaN, and comments.",
+      "kind": "library"
+    },
     "html": {
       "repo": "html",
       "description": "HTML in Zig, the way the WHATWG HTML standard parses it.",

@@ -26,5 +26,6 @@
     { "binding": "SITE_FASTMEM", "service": "baskingspot-dev-fastmem" },
     { "binding": "SITE_TOML", "service": "baskingspot-dev-toml" },
     { "binding": "SITE_HTML", "service": "baskingspot-dev-html" },
+    { "binding": "SITE_JSON5", "service": "baskingspot-dev-json5" },
   ],
 }
