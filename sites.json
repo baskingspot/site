@@ -49,6 +49,11 @@
       "repo": "bencode",
       "description": "Bencode in Zig: an incremental reader, a value tree, and a writer.",
       "kind": "library"
+    },
+    "utf": {
+      "repo": "utf",
+      "description": "SIMD Unicode validation and transcoding, plus base64, in Zig with no C.",
+      "kind": "library"
     }
   }
 }
