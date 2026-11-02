@@ -29,5 +29,6 @@
     { "binding": "SITE_JSON5", "service": "baskingspot-dev-json5" },
     { "binding": "SITE_BENCODE", "service": "baskingspot-dev-bencode" },
     { "binding": "SITE_UTF", "service": "baskingspot-dev-utf" },
+    { "binding": "SITE_AHO_CORASICK", "service": "baskingspot-dev-aho-corasick" },
   ],
 }

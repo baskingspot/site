@@ -54,6 +54,11 @@
       "repo": "utf",
       "description": "SIMD Unicode validation and transcoding, plus base64, in Zig with no C.",
       "kind": "library"
+    },
+    "aho-corasick": {
+      "repo": "aho-corasick",
+      "description": "Aho-Corasick multi-pattern search in Zig, with the automaton built at comptime.",
+      "kind": "library"
     }
   }
 }
