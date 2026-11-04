@@ -59,6 +59,11 @@
       "repo": "aho-corasick",
       "description": "Aho-Corasick multi-pattern search in Zig, with the automaton built at comptime.",
       "kind": "library"
+    },
+    "image": {
+      "repo": "image",
+      "description": "Image decoders and encoders in Zig with no C: PNG, JPEG, GIF, WebP, TIFF, JPEG XL, and more.",
+      "kind": "library"
     }
   }
 }
