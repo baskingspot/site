@@ -16,8 +16,8 @@ run "workers_tokens_and_secrets" {
   command = apply
 
   assert {
-    condition     = toset(keys(cloudflare_worker.this)) == toset(["baskingspot-dev", "baskingspot-dev-stdx", "baskingspot-dev-zig-benchmark"])
-    error_message = "Expected the router and one Worker per roster entry."
+    condition     = toset(keys(cloudflare_worker.this)) == toset(["baskingspot-dev", "baskingspot-zig-mirror", "baskingspot-dev-stdx", "baskingspot-dev-zig-benchmark"])
+    error_message = "Expected the router, the Zig mirror, and one Worker per roster entry."
   }
 
   assert {
@@ -26,7 +26,7 @@ run "workers_tokens_and_secrets" {
   }
 
   assert {
-    condition     = github_actions_secret.token["baskingspot-dev"].repository == "site" && github_actions_secret.token["baskingspot-dev-stdx"].repository == "stdx" && github_actions_secret.token["baskingspot-dev-zig-benchmark"].repository == "benchmark"
+    condition     = github_actions_secret.token["baskingspot-dev"].repository == "site" && github_actions_secret.token["baskingspot-zig-mirror"].repository == "site" && github_actions_secret.token["baskingspot-dev-stdx"].repository == "stdx" && github_actions_secret.token["baskingspot-dev-zig-benchmark"].repository == "benchmark"
     error_message = "Each token must land in the repo that deploys that Worker."
   }
 
@@ -44,17 +44,28 @@ run "workers_tokens_and_secrets" {
     condition     = length(cloudflare_workers_custom_domain.router) == 1 && cloudflare_workers_custom_domain.router[0].service == "baskingspot-dev"
     error_message = "baskingspot.dev must point at the router."
   }
+
+  assert {
+    condition     = length(cloudflare_workers_custom_domain.zig) == 1 && cloudflare_workers_custom_domain.zig[0].hostname == "zig.baskingspot.dev" && cloudflare_workers_custom_domain.zig[0].service == "baskingspot-zig-mirror"
+    error_message = "zig.baskingspot.dev must point at the mirror."
+  }
+
+  assert {
+    condition     = github_actions_secret.token["baskingspot-zig-mirror"].secret_name == "CLOUDFLARE_API_TOKEN_MIRROR"
+    error_message = "The mirror's token needs its own secret name, or it overwrites the router's."
+  }
 }
 
 run "domain_can_be_held_back" {
   command = apply
 
   variables {
-    attach_domain = false
+    attach_domain        = false
+    attach_mirror_domain = false
   }
 
   assert {
-    condition     = length(cloudflare_workers_custom_domain.router) == 0
-    error_message = "attach_domain = false must not create the domain."
+    condition     = length(cloudflare_workers_custom_domain.router) == 0 && length(cloudflare_workers_custom_domain.zig) == 0
+    error_message = "both switches off must create neither domain."
   }
 }

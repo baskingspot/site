@@ -9,3 +9,9 @@ variable "attach_domain" {
   default     = true
   description = "Attach baskingspot.dev to the router. If the first apply fails because the router has no deployed version, apply with false, deploy the router, then apply again with true."
 }
+
+variable "attach_mirror_domain" {
+  type        = bool
+  default     = true
+  description = "Attach zig.baskingspot.dev to the mirror. Apply with false the first time, deploy the mirror, then apply again with true."
+}

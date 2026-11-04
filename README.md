@@ -5,9 +5,9 @@
   </picture>
 </h1>
 
-The router for baskingspot.dev, and the Terraform that gives each library its own Worker.
+The router for baskingspot.dev, the Zig download mirror, and the Terraform that gives each library its own Worker.
 
-`baskingspot.dev/stdx/` is stdx's docs. Each library repo builds its docs into a folder named for its slug and deploys them to a private Cloudflare Worker, `baskingspot-dev-stdx`. That Worker has no public URL. The router in this repo is the only public Worker. It sends `/stdx/...` to the stdx Worker through a service binding and serves the landing page itself. It doesn't strip the prefix, so a library's own redirects, like `/stdx/api` to `/stdx/api/`, stay inside it.
+`baskingspot.dev/stdx/` is stdx's docs. Each library repo builds its docs into a folder named for its slug and deploys them to a private Cloudflare Worker, `baskingspot-dev-stdx`. That Worker has no public URL. The router in this repo sends `/stdx/...` to the stdx Worker through a service binding and serves the landing page itself. The router and the Zig mirror are the public Workers. It doesn't strip the prefix, so a library's own redirects, like `/stdx/api` to `/stdx/api/`, stay inside it.
 
 ## Layout
 
@@ -15,7 +15,8 @@ The router for baskingspot.dev, and the Terraform that gives each library its ow
 | ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `sites.json`       | The roster: each slug, the repo that deploys it, and a one-sentence description for the landing page                                                 |
 | `router/`          | The router Worker and its `wrangler.jsonc`. `index.html` and `static/` are the landing page. `build.mjs` writes `public/` from them and `sites.json` |
-| `terraform/`       | For each site and the router: an empty Worker, a token scoped to it, and the token written into the repo's secrets                                   |
+| `mirror/`          | The Zig download Worker at `zig.baskingspot.dev`, and its tests                                                                                      |
+| `terraform/`       | For each site, the router, and the mirror: an empty Worker, a token scoped to it, and the token written into the repo's secrets                      |
 | `terraform/tests/` | Tests with mocked providers. They check the wiring: one token per Worker, scoped to its id                                                           |
 
 The router's `wrangler.jsonc` lists one service binding per site it serves, named `SITE_<SLUG>`.
@@ -75,6 +76,14 @@ endpoint. The router only answers a slug that has a service binding, so a repo t
 not registered is a 404. It serves source archives only: a program's binaries
 are the release assets on GitHub, and the package-manager channels built on
 them. Do not add a route that mirrors them.
+
+## Zig downloads
+
+`zig.baskingspot.dev/<file>` serves a Zig tarball or its `.minisig`. It is a pull-through cache: a hit comes from Cloudflare's edge cache, and a miss takes the file from a random community mirror, then another, and ends at `ziglang.org`. The name decides the origin path: a release is `/download/<version>/<file>` and a `-dev.` build is `/builds/<file>`, which is the rule in [MIRRORS.md](https://codeberg.org/ziglang/ziglang.org/src/branch/main/MIRRORS.md). A name that is not a Zig tarball is a 404. An upstream that will not answer is a 504, so the client knows the problem is not here.
+
+The mirror verifies nothing. The Zig Software Foundation signs every tarball and the client checks the signature, so a mirror is not a trust anchor. That is also why there is no R2 bucket behind this: an evicted object is a miss, and a miss is allowed to pull from the origin again.
+
+`mirror/` has its own Worker and its own token, so a bad deploy cannot take the docs down.
 
 ## Add a site
 

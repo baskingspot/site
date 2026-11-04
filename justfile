@@ -5,21 +5,21 @@
 default:
     @just --list
 
-[doc("Run the router tests (the roster must match the router's service bindings), the Terraform tests with mocked providers, and `tofu validate`")]
+[doc("Run the router and mirror tests (the roster must match the router's service bindings), the Terraform tests with mocked providers, and `tofu validate`")]
 [group("test")]
 test:
-    node --test "router/test/*.test.mjs"
+    node --test "router/test/*.test.mjs" "mirror/test/*.test.mjs"
     tofu -chdir=terraform init -backend=false -input=false > /dev/null
     tofu -chdir=terraform validate
     tofu -chdir=terraform test
 
-[doc("Check OpenTofu (tofu fmt, tflint), the router (oxlint, oxfmt), Nix, Markdown and JSON, the workflows, and this justfile")]
+[doc("Check OpenTofu (tofu fmt, tflint), the Workers (oxlint, oxfmt), Nix, Markdown and JSON, the workflows, and this justfile")]
 [group("lint")]
 lint:
     tofu fmt -check -recursive terraform
     tflint --chdir terraform
-    oxlint router
-    oxfmt --check README.md AGENTS.md docs router sites.json router/skills.json .github
+    oxlint router mirror
+    oxfmt --check README.md AGENTS.md docs router mirror sites.json router/skills.json .github
     nix fmt -- --ci
     actionlint
     zizmor .
@@ -29,7 +29,7 @@ lint:
 [group("lint")]
 fmt:
     tofu fmt -recursive terraform
-    oxfmt README.md AGENTS.md docs router sites.json router/skills.json .github
+    oxfmt README.md AGENTS.md docs router mirror sites.json router/skills.json .github
     nix fmt
     just --fmt
 
@@ -58,6 +58,11 @@ apply:
 [group("deploy")]
 deploy: build
     wrangler deploy --config router/wrangler.jsonc
+
+[doc("Deploy the Zig mirror. CI runs this on main with the token Terraform minted. Needs CLOUDFLARE_API_TOKEN_MIRROR and CLOUDFLARE_ACCOUNT_ID")]
+[group("deploy")]
+deploy-mirror:
+    wrangler deploy --config mirror/wrangler.jsonc
 
 [doc("Run the router and the landing page locally on port 8787")]
 [group("deploy")]

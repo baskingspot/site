@@ -28,3 +28,17 @@ jobs:
       account-id: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
     secrets:
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+
+  # Deploys the Zig mirror with its own token, which is scoped to the mirror's
+  # Worker. It runs beside the router deploy, not after it.
+  deploy-mirror:
+    needs: ci
+    if: github.ref == 'refs/heads/main' && vars.CLOUDFLARE_ACCOUNT_ID != ''
+    permissions:
+      contents: read
+    uses: baskingspot/gh-actions/.github/workflows/deploy-docs.yml@a26279caa6babcb0b548e6c55ced2aac9ee9a5b9 # v0.12.1
+    with:
+      recipe: deploy-mirror
+      account-id: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+    secrets:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN_MIRROR }}
