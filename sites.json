@@ -69,6 +69,11 @@
       "repo": "image",
       "description": "Image decoders and encoders in Zig with no C: PNG, JPEG, GIF, WebP, TIFF, JPEG XL, and more.",
       "kind": "library"
+    },
+    "prometheus": {
+      "repo": "prometheus",
+      "description": "Prometheus text exposition format for Zig: write metrics to any writer, no HTTP.",
+      "kind": "library"
     }
   }
 }

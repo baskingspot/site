@@ -32,5 +32,6 @@
     { "binding": "SITE_UTF", "service": "baskingspot-dev-utf" },
     { "binding": "SITE_AHO_CORASICK", "service": "baskingspot-dev-aho-corasick" },
     { "binding": "SITE_IMAGE", "service": "baskingspot-dev-image" },
+    { "binding": "SITE_PROMETHEUS", "service": "baskingspot-dev-prometheus" },
   ],
 }
