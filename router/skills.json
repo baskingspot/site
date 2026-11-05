@@ -1,6 +1,11 @@
 {
   "skills": [
     {
+      "name": "zig-017",
+      "url": "https://github.com/baskingspot/skills/tree/main/skills/zig-017",
+      "description": "Write and port Zig 0.17: the 0.16 to 0.17 migration, and the primitive behind a hand-written type."
+    },
+    {
       "name": "zig-016",
       "url": "https://github.com/baskingspot/skills/tree/main/skills/zig-016",
       "description": "Write Zig 0.16 with tested primitives, testingx, and the house style."
