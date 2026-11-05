@@ -45,6 +45,11 @@
       "description": "HTML in Zig, the way the WHATWG HTML standard parses it.",
       "kind": "library"
     },
+    "http": {
+      "repo": "http",
+      "description": "HTTP/1.1 and HTTP/2 in Zig: field-value parsers, sans-I/O connection machines, and the engines you build a server or client on.",
+      "kind": "library"
+    },
     "bencode": {
       "repo": "bencode",
       "description": "Bencode in Zig: an incremental reader, a value tree, and a writer.",
