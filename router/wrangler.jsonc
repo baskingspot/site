@@ -33,5 +33,6 @@
     { "binding": "SITE_AHO_CORASICK", "service": "baskingspot-dev-aho-corasick" },
     { "binding": "SITE_IMAGE", "service": "baskingspot-dev-image" },
     { "binding": "SITE_PROMETHEUS", "service": "baskingspot-dev-prometheus" },
+    { "binding": "SITE_WEBSOCKET", "service": "baskingspot-dev-websocket" },
   ],
 }

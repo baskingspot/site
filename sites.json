@@ -74,6 +74,11 @@
       "repo": "prometheus",
       "description": "Prometheus text exposition format for Zig: write metrics to any writer, no HTTP.",
       "kind": "library"
+    },
+    "websocket": {
+      "repo": "websocket",
+      "description": "WebSocket frames and the upgrade handshake in Zig, with no IO and no allocator.",
+      "kind": "library"
     }
   }
 }
