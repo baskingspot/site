@@ -36,6 +36,25 @@ test("the router forwards the request unchanged and 404s the rest", async () => 
   assert.equal(miss.status, 404);
 });
 
+test("a tagged archive needs no docs Worker", async (t) => {
+  const location = "https://codeload.github.com/baskingspot/protobuf/tar.gz/refs/tags/v0.1.0";
+  const upstream = t.mock.method(globalThis, "fetch", async (url, options) => {
+    assert.equal(url, "https://github.com/baskingspot/protobuf/archive/refs/tags/v0.1.0.tar.gz");
+    assert.equal(options.method, "HEAD");
+    assert.equal(options.redirect, "manual");
+    return new Response(null, { status: 302, headers: { location } });
+  });
+  const response = await router.fetch(
+    new Request("https://baskingspot.dev/protobuf/v0.1.0.tar.gz"),
+    {},
+  );
+  assert.equal(response.status, 302);
+  assert.equal(response.headers.get("location"), location);
+  assert.equal(upstream.mock.callCount(), 1);
+  const docs = await router.fetch(new Request("https://baskingspot.dev/protobuf/"), {});
+  assert.equal(docs.status, 404);
+});
+
 test("every slug in sites.json is a valid path segment", () => {
   for (const slug of Object.keys(read("../../sites.json").sites)) {
     assert.match(slug, /^[a-z0-9-]+$/);
@@ -244,9 +263,10 @@ test("a version path redirects to the resolved archive", async () => {
   }
 });
 
-test("a version path for a slug with no site is the 404", async () => {
-  const res = await router.fetch(new Request("https://baskingspot.dev/nope/v0.1.0"), {});
-  assert.equal(res.status, 404);
+test("a version permalink needs no docs Worker", async () => {
+  const res = await router.fetch(new Request("https://baskingspot.dev/protobuf/v0.1.0"), {});
+  assert.equal(res.status, 308);
+  assert.equal(res.headers.get("location"), "https://baskingspot.dev/protobuf/v0.1.0.tar.gz");
 });
 
 test("the extensionless version path redirects to the archive form", async () => {

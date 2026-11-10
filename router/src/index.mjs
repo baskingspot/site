@@ -231,7 +231,7 @@ export default {
     // A version permalink has no trailing slash. Sites always do.
     const stripped = url.pathname.replace(/\/+$/, "");
     const archive = versionArchive(stripped);
-    if (archive !== undefined && siteFor(env, stripped) !== undefined) {
+    if (archive !== undefined) {
       if (archive.extension === "") {
         return withHeaders(Response.redirect(`${url.origin}${stripped}.tar.gz`, 308));
       }
