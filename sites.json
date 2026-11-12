@@ -2,7 +2,7 @@
   "sites": {
     "stdx": {
       "repo": "stdx",
-      "description": "Extensions to the Zig 0.16 standard library: fixed-capacity containers, strict parsers, IPv4 types, and the primitives std lacks.",
+      "description": "Extensions to the Zig 0.16 and 0.17 standard libraries: fixed-capacity containers, strict parsers, IPv4 types, and the primitives std lacks.",
       "kind": "library"
     },
     "compress": {
