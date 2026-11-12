@@ -27,6 +27,8 @@
     { "binding": "SITE_TOML", "service": "baskingspot-dev-toml" },
     { "binding": "SITE_HTML", "service": "baskingspot-dev-html" },
     { "binding": "SITE_HTTP", "service": "baskingspot-dev-http" },
+    { "binding": "SITE_GRPC", "service": "baskingspot-dev-grpc" },
+    { "binding": "SITE_PROTOBUF", "service": "baskingspot-dev-protobuf" },
     { "binding": "SITE_JSON5", "service": "baskingspot-dev-json5" },
     { "binding": "SITE_BENCODE", "service": "baskingspot-dev-bencode" },
     { "binding": "SITE_UTF", "service": "baskingspot-dev-utf" },

@@ -50,6 +50,16 @@
       "description": "HTTP/1.1 and HTTP/2 in Zig: field-value parsers, sans-I/O connection machines, and the engines you build a server or client on.",
       "kind": "library"
     },
+    "grpc": {
+      "repo": "grpc",
+      "description": "gRPC in Zig: message framing, status codes, and calls over HTTP/2, with no code generation.",
+      "kind": "library"
+    },
+    "protobuf": {
+      "repo": "protobuf",
+      "description": "Protocol Buffers in Zig: the wire format, and a typed layer over plain structs.",
+      "kind": "library"
+    },
     "bencode": {
       "repo": "bencode",
       "description": "Bencode in Zig: an incremental reader, a value tree, and a writer.",
