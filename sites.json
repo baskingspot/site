@@ -90,6 +90,11 @@
       "description": "Metrics for Zig: an exposition-format writer and the recording types above it, with no HTTP.",
       "kind": "library"
     },
+    "uring": {
+      "repo": "uring",
+      "description": "An io_uring completion loop for Zig: one ring, one tick, and a user_data type you define.",
+      "kind": "library"
+    },
     "websocket": {
       "repo": "websocket",
       "description": "WebSocket frames and the upgrade handshake in Zig, with no IO and no allocator.",
