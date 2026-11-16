@@ -36,5 +36,6 @@
     { "binding": "SITE_IMAGE", "service": "baskingspot-dev-image" },
     { "binding": "SITE_METRICS", "service": "baskingspot-dev-metrics" },
     { "binding": "SITE_WEBSOCKET", "service": "baskingspot-dev-websocket" },
+    { "binding": "SITE_PG", "service": "baskingspot-dev-pg" },
   ],
 }

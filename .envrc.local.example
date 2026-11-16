@@ -1,5 +1,6 @@
 # Copy this file to .envrc.local, which git ignores, and fill in your values.
-# Only a person applies the Terraform in terraform/. CI never does.
+# CI never applies this: it runs from a workstation, by hand or by an agent,
+# with the tokens below in the environment.
 
 # A Cloudflare token that can create account tokens and Workers, and read the baskingspot.dev zone.
 export CLOUDFLARE_API_TOKEN=

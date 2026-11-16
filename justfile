@@ -48,7 +48,7 @@ plan:
     tofu -chdir=terraform init -input=false
     tofu -chdir=terraform plan
 
-[doc("Apply the Terraform: create the Workers, the tokens, and the secrets in each repo. Only a person runs this")]
+[doc("Apply the Terraform: create the Workers, the tokens, and the secrets in each repo")]
 [group("terraform")]
 apply:
     tofu -chdir=terraform init -input=false
