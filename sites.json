@@ -99,6 +99,11 @@
       "repo": "websocket",
       "description": "WebSocket frames and the upgrade handshake in Zig, with no IO and no allocator.",
       "kind": "library"
+    },
+    "tracy": {
+      "repo": "tracy",
+      "description": "Tracy profiler bindings for Zig: zones, plots, messages, and an allocator, compiled out when disabled.",
+      "kind": "library"
     }
   }
 }
