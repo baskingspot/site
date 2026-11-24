@@ -39,5 +39,6 @@
     { "binding": "SITE_PG", "service": "baskingspot-dev-pg" },
     { "binding": "SITE_URING", "service": "baskingspot-dev-uring" },
     { "binding": "SITE_TRACY", "service": "baskingspot-dev-tracy" },
+    { "binding": "SITE_ZIGDOC", "service": "baskingspot-dev-zigdoc" },
   ],
 }

@@ -104,6 +104,11 @@
       "repo": "tracy",
       "description": "Tracy profiler bindings for Zig: zones, plots, messages, and an allocator, compiled out when disabled.",
       "kind": "library"
+    },
+    "zigdoc": {
+      "repo": "zigdoc",
+      "description": "A command-line tool to view documentation for Zig standard library symbols.",
+      "kind": "tool"
     }
   }
 }
