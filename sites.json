@@ -107,7 +107,7 @@
     },
     "zigdoc": {
       "repo": "zigdoc",
-      "description": "A command-line tool to view documentation for Zig standard library symbols.",
+      "description": "Zig standard library documentation in the terminal.",
       "kind": "tool"
     }
   }
