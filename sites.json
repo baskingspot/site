@@ -109,6 +109,11 @@
       "repo": "zigdoc",
       "description": "Zig standard library documentation in the terminal.",
       "kind": "tool"
+    },
+    "ziglint": {
+      "repo": "ziglint",
+      "description": "Opinionated linting to keep your agent in check.",
+      "kind": "tool"
     }
   }
 }
