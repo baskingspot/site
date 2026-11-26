@@ -114,6 +114,11 @@
       "repo": "ziglint",
       "description": "Opinionated linting to keep your agent in check.",
       "kind": "tool"
+    },
+    "sigv4": {
+      "repo": "sigv4",
+      "description": "AWS Signature Version 4 request signing in Zig: the canonical request, the string to sign, and the HMAC-SHA256 signing key, with no I/O.",
+      "kind": "library"
     }
   }
 }

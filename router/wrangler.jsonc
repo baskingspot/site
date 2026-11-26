@@ -41,5 +41,6 @@
     { "binding": "SITE_TRACY", "service": "baskingspot-dev-tracy" },
     { "binding": "SITE_ZIGDOC", "service": "baskingspot-dev-zigdoc" },
     { "binding": "SITE_ZIGLINT", "service": "baskingspot-dev-ziglint" },
+    { "binding": "SITE_SIGV4", "service": "baskingspot-dev-sigv4" },
   ],
 }
