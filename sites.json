@@ -3,107 +3,134 @@
     "stdx": {
       "repo": "stdx",
       "description": "Extensions to the Zig 0.17 standard library: fixed-capacity containers, strict parsers, IPv4 types, and the primitives std lacks.",
-      "kind": "library"
-    },
-    "compress": {
-      "repo": "compress",
-      "description": "Compression codecs in pure Zig: Snappy, DEFLATE, gzip, zlib, Zstandard, and Brotli.",
-      "kind": "library"
+      "kind": "library",
+      "group": "core"
     },
     "testingx": {
       "repo": "testingx",
       "description": "A plain-text test runner, Go-style benchmarks, and compile-time test fixtures for Zig 0.17.",
-      "kind": "library"
-    },
-    "tls": {
-      "repo": "tls",
-      "description": "TLS 1.3 in Zig: a sans-I/O engine over caller-owned buffers, with blocking, nonblocking, and kTLS integrations.",
-      "kind": "library"
+      "kind": "library",
+      "group": "core"
     },
     "cli": {
       "repo": "cli",
       "description": "Command-line flags for Zig, the getopt_long way: -xvf, --out=file, and a while loop.",
-      "kind": "library"
+      "kind": "library",
+      "group": "core"
     },
     "fastmem": {
       "repo": "fastmem",
       "description": "Fast memcpy, memmove, and memset for Zig.",
-      "kind": "library"
-    },
-    "toml": {
-      "repo": "toml",
-      "description": "TOML 1.1.0 in Zig: a strict parser, a value tree, and a writer.",
-      "kind": "library"
-    },
-    "pg": {
-      "repo": "pg",
-      "description": "PostgreSQL wire protocol in Zig: frontend and backend message codecs, with no IO and no allocator.",
-      "kind": "library"
-    },
-    "json5": {
-      "repo": "json5",
-      "description": "JSON5 in Zig: unquoted keys, single quotes, hex numbers, NaN, and comments.",
-      "kind": "library"
-    },
-    "html": {
-      "repo": "html",
-      "description": "HTML in Zig, the way the WHATWG HTML standard parses it.",
-      "kind": "library"
-    },
-    "http": {
-      "repo": "http",
-      "description": "HTTP/1.1 and HTTP/2 in Zig: field-value parsers, sans-I/O connection machines, and the engines that put them on a socket.",
-      "kind": "library"
-    },
-    "grpc": {
-      "repo": "grpc",
-      "description": "gRPC in Zig: a client and a server over HTTP/2, with no code generation.",
-      "kind": "library"
-    },
-    "protobuf": {
-      "repo": "protobuf",
-      "description": "Protocol Buffers in Zig: the wire format, and a typed layer over plain structs.",
-      "kind": "library"
-    },
-    "bencode": {
-      "repo": "bencode",
-      "description": "Bencode in Zig: an incremental reader, a value tree, and a writer.",
-      "kind": "library"
-    },
-    "utf": {
-      "repo": "utf",
-      "description": "SIMD Unicode validation and transcoding, plus base64, in Zig with no C.",
-      "kind": "library"
-    },
-    "aho-corasick": {
-      "repo": "aho-corasick",
-      "description": "Aho-Corasick multi-pattern search in Zig, with the automaton built at comptime.",
-      "kind": "library"
-    },
-    "image": {
-      "repo": "image",
-      "description": "Image decoders and encoders in Zig with no C: PNG, JPEG, GIF, WebP, TIFF, JPEG XL, and more.",
-      "kind": "library"
-    },
-    "metrics": {
-      "repo": "metrics",
-      "description": "Prometheus text exposition for Zig: write metrics to any writer, with counters, gauges, and histograms above it, and no HTTP.",
-      "kind": "library"
+      "kind": "library",
+      "group": "core"
     },
     "uring": {
       "repo": "uring",
       "description": "An io_uring completion loop for Zig: one ring, one tick, and a user_data type you define.",
-      "kind": "library"
+      "kind": "library",
+      "group": "core"
     },
-    "websocket": {
-      "repo": "websocket",
-      "description": "WebSocket frames and the upgrade handshake in Zig, with no IO and no allocator.",
-      "kind": "library"
+    "metrics": {
+      "repo": "metrics",
+      "description": "Prometheus text exposition for Zig: write metrics to any writer, with counters, gauges, and histograms above it, and no HTTP.",
+      "kind": "library",
+      "group": "core"
     },
     "tracy": {
       "repo": "tracy",
       "description": "Tracy profiler bindings for Zig: zones, plots, messages, and an allocator, compiled out when disabled.",
-      "kind": "library"
+      "kind": "library",
+      "group": "core"
+    },
+    "http": {
+      "repo": "http",
+      "description": "HTTP/1.1 and HTTP/2 in Zig: field-value parsers, sans-I/O connection machines, and the engines that put them on a socket.",
+      "kind": "library",
+      "group": "network"
+    },
+    "tls": {
+      "repo": "tls",
+      "description": "TLS 1.3 in Zig: a sans-I/O engine over caller-owned buffers, with blocking, nonblocking, and kTLS integrations.",
+      "kind": "library",
+      "group": "network"
+    },
+    "grpc": {
+      "repo": "grpc",
+      "description": "gRPC in Zig: a client and a server over HTTP/2, with no code generation.",
+      "kind": "library",
+      "group": "network"
+    },
+    "websocket": {
+      "repo": "websocket",
+      "description": "WebSocket frames and the upgrade handshake in Zig, with no IO and no allocator.",
+      "kind": "library",
+      "group": "network"
+    },
+    "pg": {
+      "repo": "pg",
+      "description": "PostgreSQL wire protocol in Zig: frontend and backend message codecs, with no IO and no allocator.",
+      "kind": "library",
+      "group": "network"
+    },
+    "sigv4": {
+      "repo": "sigv4",
+      "description": "AWS Signature Version 4 request signing in Zig: the canonical request, the string to sign, and the HMAC-SHA256 signing key, with no I/O.",
+      "kind": "library",
+      "group": "network"
+    },
+    "compress": {
+      "repo": "compress",
+      "description": "Compression codecs in pure Zig: Snappy, DEFLATE, gzip, zlib, Zstandard, and Brotli.",
+      "kind": "library",
+      "group": "formats"
+    },
+    "image": {
+      "repo": "image",
+      "description": "Image decoders and encoders in Zig with no C: PNG, JPEG, GIF, WebP, TIFF, JPEG XL, and more.",
+      "kind": "library",
+      "group": "formats"
+    },
+    "toml": {
+      "repo": "toml",
+      "description": "TOML 1.1.0 in Zig: a strict parser, a value tree, and a writer.",
+      "kind": "library",
+      "group": "formats"
+    },
+    "json5": {
+      "repo": "json5",
+      "description": "JSON5 in Zig: unquoted keys, single quotes, hex numbers, NaN, and comments.",
+      "kind": "library",
+      "group": "formats"
+    },
+    "html": {
+      "repo": "html",
+      "description": "HTML in Zig, the way the WHATWG HTML standard parses it.",
+      "kind": "library",
+      "group": "formats"
+    },
+    "protobuf": {
+      "repo": "protobuf",
+      "description": "Protocol Buffers in Zig: the wire format, and a typed layer over plain structs.",
+      "kind": "library",
+      "group": "formats"
+    },
+    "bencode": {
+      "repo": "bencode",
+      "description": "Bencode in Zig: an incremental reader, a value tree, and a writer.",
+      "kind": "library",
+      "group": "formats"
+    },
+    "utf": {
+      "repo": "utf",
+      "description": "SIMD Unicode validation and transcoding, plus base64, in Zig with no C.",
+      "kind": "library",
+      "group": "text"
+    },
+    "aho-corasick": {
+      "repo": "aho-corasick",
+      "description": "Aho-Corasick multi-pattern search in Zig, with the automaton built at comptime.",
+      "kind": "library",
+      "group": "text"
     },
     "zigdoc": {
       "repo": "zigdoc",
@@ -114,11 +141,6 @@
       "repo": "ziglint",
       "description": "Opinionated linting to keep your agent in check.",
       "kind": "tool"
-    },
-    "sigv4": {
-      "repo": "sigv4",
-      "description": "AWS Signature Version 4 request signing in Zig: the canonical request, the string to sign, and the HMAC-SHA256 signing key, with no I/O.",
-      "kind": "library"
     }
   }
 }

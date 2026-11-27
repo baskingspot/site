@@ -1,16 +1,21 @@
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import { test } from "node:test";
 
 import {
+  collectSections,
+  renderCountSummary,
   renderIndexMarkdown,
   renderLlmsTxt,
+  renderRailNav,
   renderSecurityTxt,
   renderSitemap,
   renderSites,
   renderSkills,
 } from "../build.mjs";
 
-const lib = (description) => ({ kind: "library", description });
+const lib = (description, group) =>
+  group === undefined ? { kind: "library", description } : { kind: "library", description, group };
 const tool = (description) => ({ kind: "tool", description });
 const skill = (name) => ({
   name,
@@ -127,4 +132,65 @@ test("the landing page gives the skills their own section", () => {
 
 test("the landing page has no skills section when the org ships none", () => {
   assert.equal(renderSkills([]), "");
+});
+
+test("grouped libraries render in LIBRARY_GROUPS order before tools", () => {
+  const html = renderSites({
+    utf: lib("utf.", "text"),
+    http: lib("http.", "network"),
+    stdx: lib("stdx.", "core"),
+    toml: lib("toml.", "formats"),
+    zigdoc: tool("docs."),
+  });
+  const order = ["Core", "Networking", "Formats &amp; codecs", "Text", "Tools"];
+  const positions = order.map((title) => html.indexOf(`<h2>${title}</h2>`));
+  for (let i = 0; i < positions.length; i++) {
+    assert.ok(positions[i] >= 0, `missing section ${order[i]}`);
+    if (i > 0)
+      assert.ok(positions[i - 1] < positions[i], `${order[i - 1]} must precede ${order[i]}`);
+  }
+});
+
+test("group validation rejects unknown groups, tools with groups, and partial grouping", () => {
+  assert.throws(() => renderSites({ x: lib("x.", "bogus") }), /x has group "bogus"/);
+  assert.throws(
+    () => renderSites({ x: { kind: "tool", description: "x.", group: "core" } }),
+    /only libraries take a group/,
+  );
+  assert.throws(() => renderSites({ a: lib("a.", "core"), b: lib("b.") }), /b has no group/);
+});
+
+test("the rail nav nests library groups under Libraries with counts", () => {
+  const sections = collectSections(
+    { stdx: lib("stdx.", "core"), utf: lib("utf.", "text"), zigdoc: tool("docs.") },
+    [skill("zig-017")],
+  );
+  const nav = renderRailNav(sections);
+  assert.match(nav, /<span>Libraries<\/span><span class="toc-count">2<\/span>/);
+  assert.match(nav, /href="#core"><span>Core<\/span><span class="toc-count">1<\/span>/);
+  assert.match(nav, /href="#text"><span>Text<\/span><span class="toc-count">1<\/span>/);
+  assert.match(nav, /href="#tools"><span>Tools<\/span><span class="toc-count">1<\/span>/);
+  assert.match(nav, /href="#skills"><span>Agent skills<\/span><span class="toc-count">1<\/span>/);
+  assert.match(nav, /href="#agents"><span>For agents<\/span>/);
+});
+
+test("the summary count formats singular and plural cleanly", () => {
+  assert.equal(
+    renderCountSummary({ stdx: lib("a.", "core"), zigdoc: tool("b.") }, [skill("zig-017")]),
+    "1 library, 1 tool, and 1 agent skill.",
+  );
+  assert.equal(
+    renderCountSummary({ a: lib("a.", "core"), b: lib("b.", "text") }, []),
+    "2 libraries.",
+  );
+});
+
+test("every library in sites.json belongs to a known group", () => {
+  const { sites } = JSON.parse(readFileSync(new URL("../../sites.json", import.meta.url), "utf8"));
+  for (const [slug, site] of Object.entries(sites)) {
+    if (site.kind === "library") {
+      assert.ok(typeof site.group === "string" && site.group.length > 0, `${slug} has no group`);
+    }
+  }
+  assert.doesNotThrow(() => collectSections(sites, []));
 });

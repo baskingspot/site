@@ -31,23 +31,68 @@
     <link rel="stylesheet" href="/style.css" />
   </head>
   <body>
-    <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="/logo-dark.svg" />
-      <img src="/logo.svg" alt="baskingspot" />
-    </picture>
-    <p class="tagline">Zig is cold-blooded. Come bask.</p>
-    <p class="what">Libraries between std and your application.</p>
-    <div class="columns">
-      <!-- sites -->
-    </div>
-    <section class="agents">
-      <h2>For agents</h2>
-      <div class="prompt">
-        <button type="button" data-copy="agent-prompt">Copy</button>
-        <pre><code id="agent-prompt">When working in Zig, start with https://baskingspot.dev/llms.txt. It lists the libraries and links to markdown for each guide. For the house style, install the skills: npx skills add baskingspot/skills</code></pre>
+    <a class="skip" href="#content">Skip to content</a>
+    <div class="page">
+      <header class="topbar">
+        <a class="site" href="/">
+          <picture>
+            <source media="(prefers-color-scheme: dark)" srcset="/logo-dark.svg" />
+            <img class="wordmark" src="/logo.svg" alt="baskingspot" />
+          </picture>
+        </a>
+        <nav class="topbar-links" aria-label="Site links">
+          <a href="/llms.txt">llms.txt</a>
+          <a href="#agents">For agents</a>
+          <a href="https://github.com/baskingspot">GitHub</a>
+        </nav>
+      </header>
+
+      <div class="layout">
+        <div class="hero">
+          <h1>Zig is cold-blooded. Come bask.</h1>
+          <p class="what">Libraries between std and your application.</p>
+          <p class="summary"><!-- count --></p>
+        </div>
+
+        <aside class="rail" aria-label="Contents">
+          <nav class="toc" aria-label="Sections">
+            <ul>
+              <!-- index -->
+            </ul>
+          </nav>
+
+          <div class="rail-section rail-authors">
+            <p class="rail-heading">Authors</p>
+            <ul class="author-list">
+              <li><a href="https://github.com/mattrobenolt">mattrobenolt</a></li>
+              <li><a href="https://github.com/rockorager">rockorager</a></li>
+            </ul>
+          </div>
+
+          <p class="rail-section rail-note">
+            Every guide ships a markdown copy at <a href="/index.md"><code>index.md</code></a> and
+            answers <code>Accept: text/markdown</code>.
+          </p>
+        </aside>
+
+        <main id="content">
+          <!-- sites -->
+
+          <section class="agents" id="agents">
+            <h2>For agents</h2>
+            <div class="prompt">
+              <button type="button" data-copy="agent-prompt">Copy</button>
+              <pre><code id="agent-prompt">When working in Zig, start with https://baskingspot.dev/llms.txt. It lists the libraries and links to markdown for each guide. For the house style, install the skills: npx skills add baskingspot/skills</code></pre>
+            </div>
+          </section>
+        </main>
       </div>
-    </section>
-    <footer><a href="https://github.com/baskingspot">github.com/baskingspot</a></footer>
+
+      <footer>
+        <a href="https://github.com/baskingspot">github.com/baskingspot</a>
+        <a href="/llms.txt">llms.txt</a>
+      </footer>
+    </div>
     <script src="/copy.js" defer></script>
   </body>
 </html>

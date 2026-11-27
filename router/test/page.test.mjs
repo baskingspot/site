@@ -26,3 +26,8 @@ test("the front page's policy allows the script it loads", () => {
   assert.doesNotMatch(html, /\son[a-z]+="/);
   assert.doesNotMatch(html, /<style>|style="/);
 });
+
+test("the front page links the authors", () => {
+  assert.match(html, /href="https:\/\/github\.com\/mattrobenolt"/);
+  assert.match(html, /href="https:\/\/github\.com\/rockorager"/);
+});
